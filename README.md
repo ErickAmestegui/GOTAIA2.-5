@@ -110,3 +110,6 @@ El servidor Express expone los siguientes endpoints técnicos para integraciones
 ## 💾 Persistencia de Datos local
 
 El proyecto utiliza un archivo `database.json` autogenerado en la raíz para almacenar la configuración de las APIs, el historial de consultas de IA, la bitácora de reportes de riego y los consumos de agua. La arquitectura orientada a la clase `DatabaseService` permite cambiar el almacenamiento a motores relacionales o NoSQL como **PostgreSQL, Supabase, Firebase o MongoDB** reemplazando los métodos de carga y guardado correspondientes.
+
+## Enlaces del proyecto
+- Video/demo: PEGA_AQUI_TU_LINK
