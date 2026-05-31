@@ -1,6 +1,64 @@
 {
   "reports": [
     {
+      "id": "rep_s21sj7my7",
+      "date": "2026-05-31T16:59:46.775Z",
+      "municipio": "santa_cruz_de_la_sierra",
+      "cropType": "maiz",
+      "hectares": 5,
+      "soilType": "arenoso",
+      "cropStage": "germinacion_emergencia",
+      "soilHumidity": 30,
+      "daysSinceLastIrrigation": 4,
+      "waterAssigned": 50000,
+      "pumpingHours": 10,
+      "weather": {
+        "temp": 31,
+        "humidity": 69,
+        "rain": 6,
+        "wind": 16,
+        "feels_like": 30,
+        "rain_chance": 88,
+        "condition": "Parcialmente nublado",
+        "timestamp": "2026-05-31T16:59:46.760Z",
+        "provider": "mock"
+      },
+      "finalIndex": 72,
+      "level": "Alto",
+      "actionText": "Riesgo crítico de déficit hídrico. Programar riego urgente e inmediato para mitigar daños permanentes.",
+      "waterRecommended": 25156,
+      "aiObservation": "Para el cultivo de **Maíz**, el requerimiento estimado de agua base es de **5.000 litros por hectárea**. Para una superficie de **5 hectáreas**, se necesitarían aproximadamente **25.000 litros de agua** por ciclo de riego regular.\n\n⚠️ **Nota técnica**: Ten en cuenta que durante la etapa de **Floración** (que es crítica para este cultivo), el requerimiento hídrico aumenta debido al coeficiente fenológico, necesitando hasta **37.500 litros** (+50%) para evitar pérdidas por estrés hídrico. Además, considerando el clima promedio de **Santa Cruz de la Sierra** (30°C, HR 65%), debes monitorear la evapotranspiración."
+    },
+    {
+      "id": "rep_8xte7g1j1",
+      "date": "2026-05-31T16:07:59.432Z",
+      "municipio": "santa_cruz_de_la_sierra",
+      "cropType": "papa",
+      "hectares": 7,
+      "soilType": "arenoso",
+      "cropStage": "germinacion_emergencia",
+      "soilHumidity": 100,
+      "daysSinceLastIrrigation": 30,
+      "waterAssigned": 100,
+      "pumpingHours": null,
+      "weather": {
+        "temp": 28,
+        "humidity": 70,
+        "rain": 5,
+        "wind": 12,
+        "feels_like": 30,
+        "rain_chance": 73,
+        "condition": "Parcialmente nublado",
+        "timestamp": "2026-05-31T16:07:59.392Z",
+        "provider": "mock"
+      },
+      "finalIndex": 63,
+      "level": "Medio",
+      "actionText": "Estrés hídrico moderado detectado. Programar riego complementario ligero en las próximas 48 horas.",
+      "waterRecommended": 4830,
+      "aiObservation": "Como recomendador agrícola de GOTAIA, te aconsejo que evalúes la textura del suelo. Suelos arenosos tienen baja retención y requieren riegos cortos pero continuos, mientras que los arcillosos retienen más humedad y son propensos al encharcamiento si se riega en exceso."
+    },
+    {
       "id": "rep_mspwjj99z",
       "date": "2026-05-31T13:41:49.801Z",
       "municipio": "charagua",
@@ -33,17 +91,103 @@
   "chats": [
     {
       "role": "user",
-      "text": "que dia wes hoy\\",
-      "timestamp": "2026-05-31T13:24:51.552Z"
+      "text": "cuantos litros de agua se necesita para 5 hectarias de maiz?",
+      "timestamp": "2026-05-31T16:45:45.692Z"
     },
     {
       "role": "assistant",
-      "text": "Como recomendador agrícola de GOTAIA, te aconsejo monitorear el balance de agua de tus predios. Recuerda programar tus turnos de riego en base al índice de estrés hídrico de GOTAIA, combinando la fenología del cultivo, tipo de suelo y lluvias registradas por la estación climática de tu municipio.",
-      "timestamp": "2026-05-31T13:24:51.559Z",
+      "text": "Como recomendador agrícola de GOTAIA, te aconsejo para el maíz priorizar el riego en la etapa de floración y polinización (R1), ya que el déficit en esta fase puede reducir el rendimiento hasta un 40%. Prefiere riegos profundos y espaciados en suelos francos.",
+      "timestamp": "2026-05-31T16:45:45.696Z",
       "type": "text"
+    },
+    {
+      "role": "user",
+      "text": "cuantos litros de agua se necesita para 5 hectarias de maiz?",
+      "timestamp": "2026-05-31T16:54:29.780Z"
+    },
+    {
+      "role": "assistant",
+      "text": "Para el cultivo de **Maíz**, el requerimiento estimado de agua base es de **5.000 litros por hectárea**. Para una superficie de **5 hectáreas**, se necesitarían aproximadamente **25.000 litros de agua** por ciclo de riego regular.\n\n⚠️ **Nota técnica**: Ten en cuenta que durante la etapa de **Floración** (que es crítica para este cultivo), el requerimiento hídrico aumenta debido al coeficiente fenológico, necesitando hasta **37.500 litros** (+50%) para evitar pérdidas por estrés hídrico.",
+      "timestamp": "2026-05-31T16:54:30.068Z",
+      "type": "text"
+    },
+    {
+      "role": "user",
+      "text": "como se puede saber la humedad del suelo",
+      "timestamp": "2026-05-31T16:58:49.218Z"
+    },
+    {
+      "role": "assistant",
+      "text": "El tipo y textura de suelo definen la capacidad de retención de humedad de tu chaco:\n- **Suelo Arenoso**: Tiene baja capacidad de retención y alta velocidad de infiltración. Requiere riegos más cortos y frecuentes.\n- **Suelo Franco**: Es el suelo ideal debido a su retención óptima y buen drenaje. Permite riegos estándar equilibrados.\n- **Suelo Arcilloso**: Retiene mucha agua y tiene baja infiltración. Riega despacio y espaciado para evitar asfixia radicular y acumulación de hongos.",
+      "timestamp": "2026-05-31T16:58:49.223Z",
+      "type": "text"
+    },
+    {
+      "role": "user",
+      "text": "Santa Cruz Hola",
+      "timestamp": "2026-05-31T17:04:33.722Z"
+    },
+    {
+      "role": "assistant",
+      "text": "Como Asistente Agrícola de GOTAIA, he procesado tu consulta. Actualmente el cultivo de **Maíz** está configurado en tu predio de referencia. Su consumo de agua base es de 5.000 L/Ha, y su fase fenológica crítica es la **Floración**. Te aconsejamos regular el riego utilizando nuestro módulo de *Diagnóstico de Riego*, el cual cruza en tiempo real el clima de tu municipio, la textura del suelo y el estado del cultivo para darte el volumen exacto requerido en litros. ¿Deseas calcular el agua requerida para alguna superficie (ej. 'cuanta agua se necesita para 5 hectareas de maiz') o consultar un municipio en particular?",
+      "timestamp": "2026-05-31T17:04:33.782Z",
+      "type": "voice"
+    },
+    {
+      "role": "user",
+      "text": "tiene hoy Santa Cruz",
+      "timestamp": "2026-05-31T17:04:54.524Z"
+    },
+    {
+      "role": "assistant",
+      "text": "Como Asistente Agrícola de GOTAIA, he procesado tu consulta. Actualmente el cultivo de **Maíz** está configurado en tu predio de referencia. Su consumo de agua base es de 5.000 L/Ha, y su fase fenológica crítica es la **Floración**. Te aconsejamos regular el riego utilizando nuestro módulo de *Diagnóstico de Riego*, el cual cruza en tiempo real el clima de tu municipio, la textura del suelo y el estado del cultivo para darte el volumen exacto requerido en litros. ¿Deseas calcular el agua requerida para alguna superficie (ej. 'cuanta agua se necesita para 5 hectareas de maiz') o consultar un municipio en particular?",
+      "timestamp": "2026-05-31T17:04:54.525Z",
+      "type": "voice"
+    },
+    {
+      "role": "user",
+      "text": "Qué clima tiene hoy Santa Cruz",
+      "timestamp": "2026-05-31T17:05:07.238Z"
+    },
+    {
+      "role": "assistant",
+      "text": "El clima de referencia para **Santa Cruz de la Sierra (Santa Cruz)** presenta una temperatura promedio de **30°C**, humedad relativa del **65%** y vientos de **15 km/h** con condición general de **Parcialmente nublado**. Si se presentan temperaturas elevadas o ráfagas de viento fuertes, la tasa de evapotranspiración de tus cultivos aumentará, por lo que te aconsejamos planificar los turnos de riego en las primeras horas de la mañana o en la noche.",
+      "timestamp": "2026-05-31T17:05:07.240Z",
+      "type": "voice"
     }
   ],
-  "waterLogs": [],
+  "waterLogs": [
+    {
+      "id": "log_k3f9v5ly9",
+      "date": "2026-05-31T16:56:37.163Z",
+      "municipio": "santa_cruz_de_la_sierra",
+      "cropType": "maiz",
+      "surfaceArea": 5,
+      "cropStage": "germinacion_emergencia",
+      "waterAvailable": 100000,
+      "waterUsed": 85000
+    },
+    {
+      "id": "log_91ikgj6xt",
+      "date": "2026-05-31T16:45:27.781Z",
+      "municipio": "santa_cruz_de_la_sierra",
+      "cropType": "maiz",
+      "surfaceArea": 5,
+      "cropStage": "germinacion_emergencia",
+      "waterAvailable": 100000,
+      "waterUsed": null
+    },
+    {
+      "id": "log_0csd0qmqx",
+      "date": "2026-05-31T16:39:04.667Z",
+      "municipio": "santa_cruz_de_la_sierra",
+      "cropType": "maiz",
+      "surfaceArea": 5,
+      "cropStage": "germinacion_emergencia",
+      "waterAvailable": 100000,
+      "waterUsed": 85000
+    }
+  ],
   "subscription": {
     "plan": "agropro"
   },

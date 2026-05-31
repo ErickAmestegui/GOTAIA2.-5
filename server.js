@@ -485,6 +485,20 @@ Ayuda a responder preguntas técnicas sobre agricultura, humedad del suelo, evap
 Sé claro, directo, profesional y estructurado en tus respuestas. Utiliza unidades métricas estándar en Bolivia (grados Celsius, litros, hectáreas, milímetros de precipitación).
 Mantén un tono de apoyo para los productores.`;
 
+const getCropsContext = () => {
+  return Object.keys(CROP_CATALOG).map(k => {
+    const c = CROP_CATALOG[k];
+    return `- ${c.name}: Consumo base ${c.baseConsumption} L/Ha, Sensibilidad: ${c.sensitivity}, Etapa crítica: ${c.criticalStage}, Temp recomendada: ${c.tempRange}. Obs: ${c.obs}`;
+  }).join('\n');
+};
+
+const getMunicipalitiesContext = () => {
+  return Object.keys(MUNICIPALITIES_CATALOG).map(k => {
+    const m = MUNICIPALITIES_CATALOG[k];
+    return `- ${m.name} (${m.dept}): Temp base ${m.baseTemp}°C, Humedad base ${m.baseHumidity}%, Viento base ${m.baseWind} km/h, Condición: ${m.condition}`;
+  }).join('\n');
+};
+
 async function getAICognition(prompt, type = 'text') {
   const apiKey = db.data.config.geminiApiKey || process.env.GEMINI_API_KEY;
   const chatsHistory = db.data.chats.slice(-10); // last 10 messages for memory
@@ -499,7 +513,7 @@ async function getAICognition(prompt, type = 'text') {
         },
         {
           role: 'model',
-          parts: [{ text: "Entendido. Asistiré técnicamente a los agricultores de Bolivia con precisión y objetividad." }]
+          parts: [{ text: "Entendido. Asistiré técnicamente a los agricultores de Bolivia con precisión y objetividad utilizando los catálogos proporcionados." }]
         }
       ];
 
@@ -510,9 +524,19 @@ async function getAICognition(prompt, type = 'text') {
         });
       });
 
+      const promptContext = `
+CATÁLOGO DE CULTIVOS DE REFERENCIA:
+${getCropsContext()}
+
+CATÁLOGO DE MUNICIPIOS DE REFERENCIA:
+${getMunicipalitiesContext()}
+
+Pregunta del agricultor: "${prompt}"
+Responde detalladamente con base en esta información técnica y realiza cualquier cálculo hídrico o matemático que sea necesario si te lo solicitan.`;
+
       contents.push({
         role: 'user',
-        parts: [{ text: prompt }]
+        parts: [{ text: promptContext }]
       });
 
       const response = await fetch(url, {
@@ -533,22 +557,86 @@ async function getAICognition(prompt, type = 'text') {
     }
   }
 
-  // Fallback Mock Inteligente en Español
+  // --- FALLBACK MOCK LOCAL ANALÍTICO INTELIGENTE ---
   const lower = prompt.toLowerCase();
-  let reply = "Como recomendador agrícola de GOTAIA, te aconsejo ";
+  
+  // 1. Detectar cultivo del catálogo
+  let detectedCropKey = null;
+  let detectedCrop = null;
+  for (const key of Object.keys(CROP_CATALOG)) {
+    const c = CROP_CATALOG[key];
+    if (lower.includes(key) || lower.includes(c.name.toLowerCase())) {
+      detectedCropKey = key;
+      detectedCrop = c;
+      break;
+    }
+  }
 
-  if (lower.includes('soya') || lower.includes('soja')) {
-    reply += "para el cultivo de soya mantener una humedad de suelo superior al 50% en el llenado de vainas (R5-R6). Evita riegos excesivos si las temperaturas son templadas para prevenir hongos radiculares como Fitóftora.";
-  } else if (lower.includes('maiz') || lower.includes('maíz')) {
-    reply += "para el maíz priorizar el riego en la etapa de floración y polinización (R1), ya que el déficit en esta fase puede reducir el rendimiento hasta un 40%. Prefiere riegos profundos y espaciados en suelos francos.";
-  } else if (lower.includes('arroz')) {
-    reply += "monitorear de cerca el arroz, ya que al ser muy sensible a la sequía en la etapa de floración, requiere un aporte volumétrico elevado (12,000 L/Ha base). Si el suelo es arcilloso, aprovecha su capacidad de retención para distanciar los turnos.";
-  } else if (lower.includes('humedad') || lower.includes('suelo')) {
-    reply += "que evalúes la textura del suelo. Suelos arenosos tienen baja retención y requieren riegos cortos pero continuos, mientras que los arcillosos retienen más humedad y son propensos al encharcamiento si se riega en exceso.";
-  } else if (lower.includes('clima') || lower.includes('calor') || lower.includes('lluvia')) {
-    reply += "revisar la previsión climática. Si la sensación térmica supera los 32°C y hay fuertes vientos, la tasa de evapotranspiración sube drásticamente. Planifica riegos nocturnos o de madrugada para mitigar pérdidas por evaporación.";
-  } else {
-    reply += "monitorear el balance de agua de tus predios. Recuerda programar tus turnos de riego en base al índice de estrés hídrico de GOTAIA, combinando la fenología del cultivo, tipo de suelo y lluvias registradas por la estación climática de tu municipio.";
+  // 2. Detectar municipio del catálogo
+  let detectedMuniKey = null;
+  let detectedMuni = null;
+  for (const key of Object.keys(MUNICIPALITIES_CATALOG)) {
+    const m = MUNICIPALITIES_CATALOG[key];
+    if (lower.includes(key.replace(/_/g, ' ')) || lower.includes(m.name.toLowerCase())) {
+      detectedMuniKey = key;
+      detectedMuni = m;
+      break;
+    }
+  }
+
+  // 3. Detectar número (ej. "5 hectáreas")
+  let hectares = 1;
+  const numRegex = /\b\d+(?:[.,]\d+)?\b/g;
+  const matches = lower.match(numRegex);
+  if (matches && matches.length > 0) {
+    hectares = parseFloat(matches[0].replace(',', '.'));
+  }
+
+  // 4. Determinar intenciones
+  const isWaterQuery = ['litro', 'agua', 'consumo', 'necesita', 'requerimiento', 'volumen', 'cantidad', 'regar', 'bombeo'].some(k => lower.includes(k));
+  const isWeatherQuery = ['clima', 'tiempo', 'temperatura', 'viento', 'lluvia', 'precipitacion', 'pronostico', 'humedad ambiental'].some(k => lower.includes(k));
+  const isSoilQuery = ['suelo', 'tierra', 'textura', 'arenoso', 'franco', 'arcilloso', 'retencion', 'drenaje'].some(k => lower.includes(k));
+  const isSensitivityQuery = ['sensibilidad', 'sensible', 'sequia', 'critico', 'etapa', 'floracion', 'fase'].some(k => lower.includes(k));
+
+  let reply = "";
+
+  if (isWaterQuery) {
+    const crop = detectedCrop || CROP_CATALOG.maiz;
+    const base = crop.baseConsumption;
+    const total = Math.round(hectares * base);
+    const criticalTotal = Math.round(total * 1.5);
+    
+    reply = `Para el cultivo de **${crop.name}**, el requerimiento estimado de agua base es de **${base.toLocaleString('es-BO')} litros por hectárea**. ` +
+            `Para una superficie de **${hectares} hectáreas**, se necesitarían aproximadamente **${total.toLocaleString('es-BO')} litros de agua** por ciclo de riego regular.\n\n` +
+            `⚠️ **Nota técnica**: Ten en cuenta que durante la etapa de **${crop.criticalStage}** (que es crítica para este cultivo), el requerimiento hídrico aumenta debido al coeficiente fenológico, necesitando hasta **${criticalTotal.toLocaleString('es-BO')} litros** (+50%) para evitar pérdidas por estrés hídrico.`;
+    
+    if (detectedMuni) {
+      reply += ` Además, considerando el clima promedio de **${detectedMuni.name}** (${detectedMuni.baseTemp}°C, HR ${detectedMuni.baseHumidity}%), debes monitorear la evapotranspiración.`;
+    }
+  } 
+  else if (isWeatherQuery) {
+    const muni = detectedMuni || MUNICIPALITIES_CATALOG.santa_cruz_de_la_sierra;
+    reply = `El clima de referencia para **${muni.name} (${muni.dept})** presenta una temperatura promedio de **${muni.baseTemp}°C**, humedad relativa del **${muni.baseHumidity}%** y vientos de **${muni.baseWind} km/h** con condición general de **${muni.condition}**. ` +
+            `Si se presentan temperaturas elevadas o ráfagas de viento fuertes, la tasa de evapotranspiración de tus cultivos aumentará, por lo que te aconsejamos planificar los turnos de riego en las primeras horas de la mañana o en la noche.`;
+  }
+  else if (isSoilQuery) {
+    reply = `El tipo y textura de suelo definen la capacidad de retención de humedad de tu chaco:\n` +
+            `- **Suelo Arenoso**: Tiene baja capacidad de retención y alta velocidad de infiltración. Requiere riegos más cortos y frecuentes.\n` +
+            `- **Suelo Franco**: Es el suelo ideal debido a su retención óptima y buen drenaje. Permite riegos estándar equilibrados.\n` +
+            `- **Suelo Arcilloso**: Retiene mucha agua y tiene baja infiltración. Riega despacio y espaciado para evitar asfixia radicular y acumulación de hongos.`;
+  }
+  else if (isSensitivityQuery) {
+    const crop = detectedCrop || CROP_CATALOG.maiz;
+    reply = `El cultivo de **${crop.name}** tiene una sensibilidad a la sequía clasificada como **${crop.sensitivity}**. ` +
+            `Su etapa de desarrollo más vulnerable al estrés hídrico es la fase de **${crop.criticalStage}**. Rango de temperatura recomendado: **${crop.tempRange}**.\n\n` +
+            `*Consejo Técnico*: ${crop.obs}`;
+  }
+  else {
+    const crop = detectedCrop || CROP_CATALOG.maiz;
+    reply = `Como Asistente Agrícola de GOTAIA, he procesado tu consulta. ` +
+            `Actualmente el cultivo de **${crop.name}** está configurado en tu predio de referencia. Su consumo de agua base es de ${crop.baseConsumption.toLocaleString('es-BO')} L/Ha, y su fase fenológica crítica es la **${crop.criticalStage}**. ` +
+            `Te aconsejamos regular el riego utilizando nuestro módulo de *Diagnóstico de Riego*, el cual cruza en tiempo real el clima de tu municipio, la textura del suelo y el estado del cultivo para darte el volumen exacto requerido en litros. ` +
+            `¿Deseas calcular el agua requerida para alguna superficie (ej. 'cuanta agua se necesita para 5 hectareas de maiz') o consultar un municipio en particular?`;
   }
 
   return reply;
