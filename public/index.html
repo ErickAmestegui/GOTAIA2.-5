@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOTAIA 2.0 - Plataforma Agrícola Inteligente</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #090d16;
+    }
+    h1, h2, h3, h4, .font-title {
+      font-family: 'Outfit', sans-serif;
+    }
+    /* Glassmorphic card */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.2);
+      box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.15);
+    }
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.5);
+    }
+    /* Active navigation indicator */
+    .nav-active {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid #10b981;
+      color: #34d399;
+    }
+    /* Custom gauge animation */
+    .gauge-circle-anim {
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Voice chat pulse effect */
+    .voice-pulse {
+      animation: pulse-ring 1.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col md:flex-row antialiased overflow-x-hidden">
+
+  <!-- SIDEBAR MOBILE HEADER -->
+  <div class="md:hidden bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center w-full z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-sky-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <svg class="w-5 h-5 text-slate-950" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 7c-2.761 0-5 3-5 6 0 2.21 2.239 4 5 4s5-1.79 5-4c0-3-2.239-6-5-6z" />
+        </svg>
+      </div>
+      <span class="font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">GOTAIA 2.0</span>
+    </div>
+    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white focus:outline-none">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-slate-900/90 border-r border-slate-800/80 p-5 shrink-0 z-40 fixed md:relative h-full top-0 left-0">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-sky-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <svg class="w-6 h-6 text-slate-950" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 7c-2.761 0-5 3-5 6 0 2.21 2.239 4 5 4s5-1.79 5-4c0-3-2.239-6-5-6z" />
+        </svg>
+      </div>
+      <div>
+        <span class="font-black text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">GOTAIA 2.0</span>
+        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Tecnología de Precisión</p>
+      </div>
+    </div>
+
+    <!-- Active Subscription status -->
+    <div class="mb-6 p-3 bg-slate-950/80 rounded-xl border border-slate-800/60">
+      <div class="flex items-center justify-between text-[11px] mb-1.5">
+        <span class="text-slate-400">Plan Actual:</span>
+        <span id="sidebar-plan-badge" class="font-bold text-xs uppercase text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">Semillita</span>
+      </div>
+      <div id="sidebar-plan-desc" class="text-[10px] text-slate-500 leading-tight">Acceso gratuito y consultas limitadas.</div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 space-y-1 overflow-y-auto">
+      <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" /></svg>
+        Panel de Control
+      </button>
+
+      <button onclick="navigate('diagnostico')" id="nav-diagnostico" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Diagnóstico de Riego
+      </button>
+
+      <button onclick="navigate('agua')" id="nav-agua" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left relative">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707" /></svg>
+        Control de Agua
+        <span class="absolute right-2 px-1.5 py-0.2 text-[8px] bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded font-bold">PRO</span>
+      </button>
+
+      <button onclick="navigate('asistente')" id="nav-asistente" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+        Asistente Técnico IA
+      </button>
+
+      <button onclick="navigate('voz')" id="nav-voz" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left relative">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+        Chat de Voz
+        <span class="absolute right-2 px-1.5 py-0.2 text-[8px] bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded font-bold">VIP</span>
+      </button>
+
+      <button onclick="navigate('historial')" id="nav-historial" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Historial Técnico
+      </button>
+
+      <button onclick="navigate('cultivos')" id="nav-cultivos" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+        Catálogo de Cultivos
+      </button>
+
+      <button onclick="navigate('municipios')" id="nav-municipios" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Municipios Agrícolas
+      </button>
+
+      <button onclick="navigate('suscripciones')" id="nav-suscripciones" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+        Planes y Suscripción
+      </button>
+
+      <button onclick="navigate('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-left">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Configuración
+      </button>
+    </nav>
+
+    <div class="mt-auto border-t border-slate-800/80 pt-4 text-center text-[10px] text-slate-500">
+      GOTAIA 2.0 &bull; 2026<br>Santa Cruz, Bolivia
+    </div>
+  </aside>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 flex flex-col min-h-screen overflow-y-auto">
+
+    <!-- TOP HEADER BAR -->
+    <header class="border-b border-slate-850 bg-slate-900/40 backdrop-blur-md sticky top-0 z-30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <h2 id="view-title" class="text-xl font-bold text-slate-100">Panel de Control</h2>
+        <span id="active-muni-header" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Santa Cruz de la Sierra</span>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="flex items-center gap-6">
+        <!-- Live weather widget -->
+        <div id="header-weather-widget" class="flex items-center gap-2.5 text-xs bg-slate-900/60 px-3.5 py-1.5 rounded-xl border border-slate-800">
+          <span id="header-weather-emoji" class="text-lg">⛅</span>
+          <div>
+            <div class="flex items-center gap-1.5 font-bold">
+              <span id="header-weather-temp">30°C</span>
+              <span class="text-[10px] text-slate-400 font-normal">|</span>
+              <span id="header-weather-humidity">HR 65%</span>
+            </div>
+            <span id="header-weather-provider" class="text-[9px] text-slate-500 uppercase tracking-widest block font-bold">API Local</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT CONTAINERS -->
+    <div class="p-6 flex-1 space-y-6 max-w-7xl w-full mx-auto">
+
+      <!-- ================= SCREEN 1: DASHBOARD ================= -->
+      <div id="view-dashboard" class="view-panel space-y-6">
+        <!-- Welcome Hero -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 border border-emerald-500/10 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+          <div class="space-y-1.5 z-10">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">¡Bienvenido a GOTAIA 2.0!</span>
+            <h3 class="text-2xl font-black text-white">Plataforma Agrícola de Diagnóstico Técnico de Riego</h3>
+            <p class="text-xs text-slate-300 max-w-2xl">
+              Monitorea el clima de tus municipios, calcula el riesgo por déficit hídrico de tus cultivos mediante nuestro algoritmo auditable y optimiza tu uso de agua con la asistencia inteligente.
+            </p>
+          </div>
+          <button onclick="navigate('diagnostico')" class="px-5 py-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-slate-950 font-bold text-xs hover:brightness-110 shadow-lg shadow-emerald-500/10 shrink-0 z-10 transition-all">
+            Calcular Riego
+          </button>
+          <!-- Background decoration -->
+          <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-emerald-500/5 blur-3xl"></div>
+        </div>
+
+        <!-- Big stats grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="glass-card rounded-2xl p-5 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Riesgo Hídrico Promedio</span>
+            <div class="flex items-baseline gap-2">
+              <span id="dash-risk-val" class="text-3xl font-extrabold text-slate-100">Bajo</span>
+              <span id="dash-risk-score" class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">25 Puntos</span>
+            </div>
+            <span class="text-[10px] text-slate-500 block mt-2">Cálculo basado en el último diagnóstico.</span>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Agua Recomendada</span>
+            <div class="flex items-baseline gap-2">
+              <span id="dash-water-rec" class="text-3xl font-extrabold text-sky-400">0 L</span>
+              <span class="text-xs text-slate-400">para cultivo</span>
+            </div>
+            <span class="text-[10px] text-slate-500 block mt-2">Suma proyectada por hectárea.</span>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Último Reporte</span>
+            <div class="flex items-baseline gap-2">
+              <span id="dash-last-crop" class="text-2xl font-bold text-slate-200">Ninguno</span>
+            </div>
+            <span id="dash-last-date" class="text-[10px] text-slate-500 block mt-3">Sin reportes generados aún.</span>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Consumo Registrado</span>
+            <div class="flex items-baseline gap-2">
+              <span id="dash-water-used" class="text-3xl font-extrabold text-amber-400">0 L</span>
+              <span class="text-xs text-slate-400">acumulado</span>
+            </div>
+            <span class="text-[10px] text-slate-500 block mt-2">Módulo de agua empresarial (AgroPro).</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Active Weather Details Card -->
+          <div class="glass-card rounded-2xl p-5 border border-slate-800 lg:col-span-1 space-y-4">
+            <h4 class="font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-slate-800/80 pb-2">Clima en tiempo real</h4>
+            <div class="flex items-center justify-between">
+              <div>
+                <span id="dash-weather-condition" class="text-base font-bold text-slate-100 block">Parcialmente Nublado</span>
+                <span id="dash-weather-city" class="text-xs text-slate-400">Santa Cruz de la Sierra</span>
+              </div>
+              <span id="dash-weather-emoji" class="text-4xl">⛅</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-xs bg-slate-950/40 p-3 rounded-xl">
+              <div>
+                <span class="text-slate-500 block text-[10px]">Sensación Térmica</span>
+                <span id="dash-w-feels" class="font-bold text-slate-200">32°C</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px]">Velocidad Viento</span>
+                <span id="dash-w-wind" class="font-bold text-slate-200">15 km/h</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px]">Precipitación</span>
+                <span id="dash-w-rain" class="font-bold text-slate-200">2 mm</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px]">Probabilidad Lluvia</span>
+                <span id="dash-w-chance" class="font-bold text-slate-200">10%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick access features -->
+          <div class="glass-card rounded-2xl p-5 border border-slate-800 lg:col-span-2 space-y-4">
+            <h4 class="font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-slate-800/80 pb-2">Estado del Plan de Suscripción</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/50 space-y-1">
+                <span class="text-[10px] font-bold text-emerald-400 block uppercase">Plan Activo</span>
+                <h5 id="dash-plan-name" class="text-lg font-black text-white">Semillita (Gratis)</h5>
+                <p class="text-[11px] text-slate-400">Consulta limitada de cultivos y municipios en tu diagnóstico.</p>
+              </div>
+              <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800/50 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 block uppercase">Funcionalidades premium</span>
+                  <p class="text-[11px] text-slate-400">Desbloquea asistente de voz, reportes en Word/Excel y control de agua.</p>
+                </div>
+                <button onclick="navigate('suscripciones')" class="text-xs text-emerald-400 font-bold hover:underline self-start mt-2">Ver planes y precios &rarr;</button>
+              </div>
+            </div>
+
+            <!-- Central Access matrix summary -->
+            <div class="text-xs space-y-2 pt-2">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Matriz de Acceso Rápido</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+                <div class="flex items-center gap-1.5 text-slate-400 bg-slate-950/30 p-1.5 rounded">
+                  <span id="chk-assistant" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> Asistente IA
+                </div>
+                <div class="flex items-center gap-1.5 text-slate-400 bg-slate-950/30 p-1.5 rounded">
+                  <span id="chk-voice" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> Chat de Voz
+                </div>
+                <div class="flex items-center gap-1.5 text-slate-400 bg-slate-950/30 p-1.5 rounded">
+                  <span id="chk-water" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> Módulo Agua
+                </div>
+                <div class="flex items-center gap-1.5 text-slate-400 bg-slate-950/30 p-1.5 rounded">
+                  <span id="chk-export" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span> Exportación Office
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 2: DIAGNÓSTICO FORM ================= -->
+      <div id="view-diagnostico" class="view-panel space-y-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- FORMULARIO -->
+          <div class="glass-card rounded-2xl p-5 border border-slate-800 lg:col-span-1 space-y-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-100">Cálculo Agrícola</h3>
+              <p class="text-[11px] text-slate-400">Ingresa las variables de tu predio para calcular el diagnóstico.</p>
+            </div>
+
+            <form id="agri-form" onsubmit="event.preventDefault(); submitDiagnostic();" class="space-y-4">
+              <!-- Municipio -->
+              <div class="space-y-1">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Municipio</label>
+                <select id="diag-muni" onchange="checkPlanLimitations()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                  <!-- Loaded dynamically -->
+                </select>
+              </div>
+
+              <!-- Cultivo y Hectáreas -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cultivo</label>
+                  <select id="diag-crop" onchange="checkPlanLimitations()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                    <!-- Loaded dynamically -->
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hectáreas</label>
+                  <input type="number" id="diag-hectares" value="5" min="0.1" max="1000" step="0.1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                </div>
+              </div>
+
+              <!-- Suelo y Etapa -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Textura Suelo</label>
+                  <select id="diag-soil" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                    <option value="arenoso">Arenoso</option>
+                    <option value="franco">Franco</option>
+                    <option value="arcilloso">Arcilloso</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Etapa Cultivo</label>
+                  <select id="diag-stage" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+                    <option value="germinacion_emergencia">Germinación</option>
+                    <option value="desarrollo_vegetativo">Desarrollo Veg.</option>
+                    <option value="floracion_fructificacion">Floración / Fruto (Crítico)</option>
+                    <option value="maduracion_cosecha">Maduración / Cosecha</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Humedad Suelo y Días sin Riego -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <span>Humedad Suelo</span>
+                    <span id="diag-soil-hum-val" class="text-emerald-400">30%</span>
+                  </div>
+                  <input type="range" id="diag-soil-humidity" min="0" max="100" value="30" oninput="document.getElementById('diag-soil-hum-val').innerText = this.value + '%'" class="w-full accent-emerald-500 h-1.5 bg-slate-950 rounded-lg">
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <span>Días sin Riego</span>
+                    <span id="diag-days-val" class="text-emerald-400">4 días</span>
+                  </div>
+                  <input type="range" id="diag-days" min="0" max="30" value="4" oninput="document.getElementById('diag-days-val').innerText = this.value + ' días'" class="w-full accent-emerald-500 h-1.5 bg-slate-950 rounded-lg">
+                </div>
+              </div>
+
+              <!-- Agua disponible y usada (Módulo Agua) -->
+              <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 space-y-2">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Asignación de Agua</span>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[9px] text-slate-500 mb-0.5">Agua Asignada (L)</label>
+                    <input type="number" id="diag-water-assigned" value="50000" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200">
+                  </div>
+                  <div>
+                    <label class="block text-[9px] text-slate-500 mb-0.5">Horas Bombeo/Sem</label>
+                    <input type="number" id="diag-pumping-hours" value="10" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200">
+                  </div>
+                </div>
+                <div class="text-[9px] text-slate-500 text-center">
+                  Costo de bombeo estimado: 15 Bs. / hora.
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl hover:brightness-110 shadow-lg shadow-emerald-500/10 transition-all text-xs">
+                Generar Informe Técnico
+              </button>
+            </form>
+          </div>
+
+          <!-- DIAGNÓSTICO / INFORME TÉCNICO OUTPUT -->
+          <div class="glass-card rounded-2xl p-6 border border-slate-800 lg:col-span-2 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
+              <div>
+                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">Resultado en Tiempo Real</span>
+                <h3 class="text-xl font-bold text-slate-100">Informe Técnico de Riego</h3>
+              </div>
+              <div id="report-badge-plan" class="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                Cargando...
+              </div>
+            </div>
+
+            <!-- If report is not yet generated -->
+            <div id="report-empty" class="text-center py-16 space-y-3">
+              <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mx-auto border border-slate-800 text-slate-600">
+                📄
+              </div>
+              <p class="text-slate-400 text-xs max-w-xs mx-auto">Ingresa los datos agrícolas a la izquierda y presiona "Generar Informe" para analizar el estado del cultivo.</p>
+            </div>
+
+            <!-- Report Details Container -->
+            <div id="report-output" class="hidden space-y-6 text-xs">
+              
+              <!-- Indicator Semáforo & Gauge -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
+                <div class="md:col-span-4 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-850 pb-4 md:pb-0 md:pr-4">
+                  <div class="relative w-28 h-28 flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90">
+                      <circle cx="56" cy="56" r="46" class="stroke-slate-800 fill-none" stroke-width="8" />
+                      <circle id="rep-circle" cx="56" cy="56" r="46" class="stroke-emerald-500 fill-none gauge-circle-anim" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="145" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute flex flex-col items-center">
+                      <span id="rep-score" class="text-2xl font-black">50</span>
+                      <span class="text-[8px] text-slate-500 uppercase font-bold">GOTAIA</span>
+                    </div>
+                  </div>
+                  <span id="rep-priority" class="mt-3 px-3 py-0.5 rounded-full font-bold text-[10px] uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">Prioridad: Baja</span>
+                </div>
+
+                <div class="md:col-span-8 space-y-2">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Diagnóstico de Riesgo Hídrico</span>
+                  <p id="rep-action" class="text-slate-200 leading-relaxed text-[11px] font-medium">Recomendación operativa principal...</p>
+                  <p class="text-slate-400 text-[11px] leading-relaxed">
+                    Este índice evalúa la interrelación de evapotranspiración (temperatura, viento), recarga hídrica (precipitaciones), retención textural del suelo y la sensibilidad fenológica del cultivo.
+                  </p>
+                </div>
+              </div>
+
+              <!-- General details table -->
+              <div class="space-y-2">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Datos de Consulta</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-950/20 p-3 rounded-xl border border-slate-850">
+                  <div>
+                    <span class="text-slate-500 block text-[10px]">Cultivo / Municipio</span>
+                    <span id="rep-general-crop" class="font-bold text-slate-200">Maíz / Warnes</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-[10px]">Fecha Diagnóstico</span>
+                    <span id="rep-general-date" class="font-bold text-slate-200">31/05/2026</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-[10px]">Temperatura / Clima</span>
+                    <span id="rep-general-weather" class="font-bold text-slate-200">32°C / Nublado</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-[10px]">Etapa / Suelo</span>
+                    <span id="rep-general-stage" class="font-bold text-slate-200">Floración / Franco</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Plan-based sections -->
+              <!-- Basic Report Content (available for all plans) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-950/30 p-4 rounded-xl border border-slate-850 space-y-2">
+                  <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1">Condiciones Climáticas</h4>
+                  <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <div><span class="text-slate-500">Hum. Ambiental:</span> <span id="rep-hum-amb" class="text-slate-300 font-medium">65%</span></div>
+                    <div><span class="text-slate-500">Viento:</span> <span id="rep-wind" class="text-slate-300 font-medium">12 km/h</span></div>
+                    <div><span class="text-slate-500">Precipitación:</span> <span id="rep-rain" class="text-slate-300 font-medium">0 mm</span></div>
+                    <div><span class="text-slate-500">Prob. Lluvia:</span> <span id="rep-rain-chance" class="text-slate-300 font-medium">10%</span></div>
+                  </div>
+                </div>
+
+                <div class="bg-slate-950/30 p-4 rounded-xl border border-slate-850 space-y-2">
+                  <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1">Humedad & Suelo</h4>
+                  <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <div><span class="text-slate-500">Hum. del Suelo:</span> <span id="rep-hum-soil" class="text-slate-300 font-medium">30%</span></div>
+                    <div><span class="text-slate-500">Días sin Riego:</span> <span id="rep-days" class="text-slate-300 font-medium">4 días</span></div>
+                    <div><span class="text-slate-500">Tipo de Suelo:</span> <span id="rep-soil" class="text-slate-300 font-medium">Franco</span></div>
+                    <div><span class="text-slate-500">Retención Suelo:</span> <span id="rep-soil-ret" class="text-slate-300 font-medium">Óptima</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Intermediate/Advanced Report Content (Blocked for Semillita, custom for Cebollita, full for Maizingo/AgroPro) -->
+              <div id="rep-adv-section" class="space-y-4">
+                <!-- Water analysis -->
+                <div class="bg-slate-950/30 p-4 rounded-xl border border-slate-850 space-y-3">
+                  <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1 flex justify-between">
+                    <span>Balance de Agua Proyectado</span>
+                    <span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.2 rounded border border-emerald-500/20 font-bold uppercase">Plus / Empresarial</span>
+                  </h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                      <span class="text-[10px] text-slate-500 block">Agua Asignada por Usuario</span>
+                      <span id="rep-w-assigned" class="text-base font-extrabold text-slate-200">50,000 L</span>
+                    </div>
+                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                      <span class="text-[10px] text-slate-500 block">Agua Recomendada GOTAIA</span>
+                      <span id="rep-w-rec" class="text-base font-extrabold text-sky-400">45,000 L</span>
+                    </div>
+                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
+                      <span class="text-[10px] text-slate-500 block">Balance / Diferencia</span>
+                      <span id="rep-w-diff" class="text-base font-extrabold text-emerald-400">+5,000 L</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Warning/Success notice -->
+                  <div id="rep-w-alert" class="p-2.5 rounded-lg text-center font-bold text-[10px]">
+                    El volumen de agua asignado cubre la demanda recomendada para este ciclo de riego.
+                  </div>
+                </div>
+
+                <!-- AI Recommendations (Blocked for Semillita & Cebollita, available for Maizingo/AgroPro) -->
+                <div id="rep-ai-section" class="bg-slate-950/30 p-4 rounded-xl border border-slate-850 space-y-2">
+                  <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1 flex justify-between">
+                    <span>Recomendación Inteligente del Asistente Técnico IA</span>
+                    <span class="text-[9px] text-amber-400 bg-amber-500/10 px-2 py-0.2 rounded border border-amber-500/20 font-bold uppercase">Maizingo / AgroPro</span>
+                  </h4>
+                  <p id="rep-ai-content" class="text-slate-300 leading-relaxed italic text-[11px]">
+                    "Basado en las condiciones climáticas del municipio y la susceptibilidad crítica en la fase del cultivo, se recomienda..."
+                  </p>
+                </div>
+              </div>
+
+              <!-- AgroPro Export buttons -->
+              <div id="rep-export-bar" class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-850 pt-4 mt-2">
+                <span class="text-[10px] text-slate-500 italic">La exportación profesional es exclusiva del Plan AgroPro.</span>
+                <button onclick="exportReport('word')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] transition-all">
+                  📥 Exportar a Word
+                </button>
+                <button onclick="exportReport('excel')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all">
+                  📥 Exportar a Excel
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 3: MÓDULO DE AGUA ================= -->
+      <div id="view-agua" class="view-panel space-y-6 hidden">
+        <div id="water-blocked-notice" class="glass-card rounded-2xl p-8 border border-slate-800 text-center space-y-4 max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center mx-auto text-3xl">
+            💧
+          </div>
+          <h3 class="text-xl font-bold text-white">Módulo de Monitoreo de Agua Empresarial</h3>
+          <p class="text-xs text-slate-400">
+            Esta pantalla es exclusiva para el **Plan AgroPro (Empresarial)**. Permite el registro de consumo de agua por predio, control acumulado de riego, comparaciones volumétricas avanzadas y generación de alertas por déficit hídrico crítico.
+          </p>
+          <button onclick="navigate('suscripciones')" class="px-5 py-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-slate-950 font-bold text-xs hover:brightness-110 transition-all">
+            Subir al Plan AgroPro
+          </button>
+        </div>
+
+        <div id="water-content" class="space-y-6 hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Register water usage -->
+            <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
+              <div>
+                <h3 class="text-lg font-bold text-slate-100">Registrar Consumo de Riego</h3>
+                <p class="text-[11px] text-slate-400">Ingresa la cantidad de agua utilizada en el predio.</p>
+              </div>
+
+              <form id="water-form" onsubmit="event.preventDefault(); registerWaterLog();" class="space-y-4">
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Municipio</label>
+                  <select id="water-muni" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                    <!-- Dynamic -->
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cultivo</label>
+                    <select id="water-crop" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                      <!-- Dynamic -->
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Área Cultivada (Has)</label>
+                    <input type="number" id="water-surface" value="5" min="1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Etapa del Cultivo</label>
+                  <select id="water-stage" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                    <option value="germinacion_emergencia">Germinación</option>
+                    <option value="desarrollo_vegetativo">Desarrollo Veg.</option>
+                    <option value="floracion_fructificacion">Floración / Fruto (Crítico)</option>
+                    <option value="maduracion_cosecha">Maduración</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Agua Disponible (L)</label>
+                    <input type="number" id="water-avail" value="100000" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                  </div>
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Agua Utilizada (L)</label>
+                    <input type="number" id="water-used" value="85000" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-sky-500 to-sky-400 text-slate-950 font-bold py-2.5 rounded-xl hover:brightness-110 shadow-lg shadow-sky-500/10 transition-all text-xs">
+                  Guardar Registro Hídrico
+                </button>
+              </form>
+            </div>
+
+            <!-- WATER STATISTICS -->
+            <div class="glass-card rounded-2xl p-6 border border-slate-800 lg:col-span-2 space-y-6">
+              <h3 class="text-lg font-bold text-slate-100 border-b border-slate-800 pb-3 flex items-center justify-between">
+                <span>Estado de Consumo Acumulado</span>
+                <span class="text-xs text-sky-400 font-medium">Monitoreo de Acuíferos</span>
+              </h3>
+
+              <!-- Comparación volumétrica graphics -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-850 flex flex-col justify-between space-y-3">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase block">Balance del Último Riego</span>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-slate-500 block">Agua Recomendada</span>
+                      <span id="w-stats-rec" class="text-xl font-bold text-sky-400">0 L</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-slate-500 block">Agua Consumida</span>
+                      <span id="w-stats-used" class="text-xl font-bold text-slate-200">0 L</span>
+                    </div>
+                  </div>
+                  <!-- Progress Bar -->
+                  <div>
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                      <span>Uso de Agua Recomendada</span>
+                      <span id="w-stats-pct" class="font-bold text-slate-300">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                      <div id="w-stats-bar" class="bg-sky-500 h-full" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-850 flex flex-col justify-between space-y-3">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase block">Seguridad del Suministro</span>
+                  <div>
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                      <span>Agua Disponible Restante</span>
+                      <span id="w-avail-pct" class="font-bold text-emerald-400">100%</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                      <div id="w-avail-bar" class="bg-emerald-500 h-full" style="width: 100%"></div>
+                    </div>
+                  </div>
+                  <div id="w-supply-alert" class="p-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-[9px] font-bold text-center">
+                    Suministro de agua suficiente en base a la asignación y consumo declarados.
+                  </div>
+                </div>
+              </div>
+
+              <!-- List of logged usages -->
+              <div class="space-y-2">
+                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Registros del Campaña Activa</span>
+                <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400">
+                        <th class="py-2 px-3">Fecha</th>
+                        <th class="py-2 px-3">Municipio / Cultivo</th>
+                        <th class="py-2 px-3">Superficie</th>
+                        <th class="py-2 px-3">Disp. / Usada</th>
+                        <th class="py-2 px-3 text-right">Déficit</th>
+                      </tr>
+                    </thead>
+                    <tbody id="water-logs-table" class="divide-y divide-slate-850 text-slate-300">
+                      <tr>
+                        <td colspan="5" class="py-4 text-center text-slate-500">Cargando registros...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 4: ASISTENTE IA ================= -->
+      <div id="view-asistente" class="view-panel space-y-6 hidden">
+        <div id="ai-text-blocked-notice" class="glass-card rounded-2xl p-8 border border-slate-800 text-center space-y-4 max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto text-3xl">
+            🤖
+          </div>
+          <h3 class="text-xl font-bold text-white">Asistente Técnico IA Avanzado</h3>
+          <p class="text-xs text-slate-400">
+            El Plan Semillita no incluye el Asistente Técnico IA Avanzado. Sube al **Plan Cebollita** para chatear con el agrónomo artificial con memoria o al **Plan Maizingo / AgroPro** para habilitar todas las capacidades.
+          </p>
+          <button onclick="navigate('suscripciones')" class="px-5 py-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-slate-950 font-bold text-xs hover:brightness-110 transition-all">
+            Ver Planes de Suscripción
+          </button>
+        </div>
+
+        <div id="ai-text-content" class="glass-card rounded-3xl border border-slate-800 flex flex-col h-[550px] overflow-hidden max-w-4xl mx-auto shadow-2xl">
+          <div class="bg-slate-900/80 px-6 py-4 border-b border-slate-850 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">🤖</div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-200">Asistente Agrícola Técnico GOTAIA</h3>
+                <p class="text-[10px] text-slate-400">Memoria de usuario activa &bull; Asesoría de cultivos, riego, clima y humedad</p>
+              </div>
+            </div>
+            <button onclick="clearChatMemory()" class="text-[10px] text-red-400 font-bold hover:underline">Reiniciar Memoria</button>
+          </div>
+
+          <!-- Chat area -->
+          <div id="ai-chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 text-xs">
+            <div class="bg-slate-900 text-slate-300 p-3 rounded-2xl border border-slate-850 max-w-[80%] leading-relaxed">
+              ¡Hola! Soy tu asistente de IA especializado en la agricultura técnica de Bolivia. Puedo aconsejarte sobre tus calendarios de riego, texturas de suelo, necesidades hídricas y control de riesgos climáticos. ¿De qué cultivo te gustaría hablar hoy?
+            </div>
+          </div>
+
+          <!-- Input area -->
+          <div class="bg-slate-900/60 p-4 border-t border-slate-850">
+            <form onsubmit="event.preventDefault(); sendTextChatMessage();" class="flex gap-2">
+              <input type="text" id="ai-chat-input" placeholder="Pregunta sobre riego en maíz, clima en Montero, etc..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none">
+              <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-5 rounded-xl transition-all">
+                Enviar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 5: CHAT DE VOZ ================= -->
+      <div id="view-voz" class="view-panel space-y-6 hidden">
+        <div id="ai-voice-blocked-notice" class="glass-card rounded-2xl p-8 border border-slate-800 text-center space-y-4 max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto text-3xl">
+            🎙️
+          </div>
+          <h3 class="text-xl font-bold text-white">Chat de Voz a Voz con la IA</h3>
+          <p class="text-xs text-slate-400">
+            La interacción de voz a voz requiere el **Plan Maizingo (Anual)** o **Plan AgroPro (Empresarial)**. Sube de plan para hablar directamente con el Asistente Técnico y recibir respuestas por audio en tiempo real.
+          </p>
+          <button onclick="navigate('suscripciones')" class="px-5 py-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-slate-950 font-bold text-xs hover:brightness-110 transition-all">
+            Subir de Plan
+          </button>
+        </div>
+
+        <div id="ai-voice-content" class="glass-card rounded-3xl border border-slate-800 p-8 flex flex-col items-center justify-center space-y-8 max-w-xl mx-auto text-center h-[450px]">
+          <div class="space-y-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-widest block">Canal de Comunicación por Voz</span>
+            <h3 class="text-xl font-bold text-white">Recomendador Conversacional</h3>
+            <p class="text-xs text-slate-400 max-w-xs">Usa el micrófono de tu dispositivo para hablar con la IA de GOTAIA. Ella procesará tu voz y te responderá en audio.</p>
+          </div>
+
+          <!-- Pulsing microphone -->
+          <div class="relative flex items-center justify-center">
+            <div id="voice-pulse-ring" class="hidden absolute w-32 h-32 rounded-full border-4 border-amber-500/20 voice-pulse"></div>
+            <button id="btn-voice-mic" onclick="toggleVoiceSession()" class="relative w-24 h-24 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 flex items-center justify-center shadow-xl shadow-amber-500/20 hover:brightness-110 transition-all z-10">
+              <svg id="voice-mic-icon" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Status indicator -->
+          <div class="space-y-1">
+            <div id="voice-status" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Sesión inactiva</div>
+            <p id="voice-subtext" class="text-[11px] text-slate-500">Haz clic en el micrófono para empezar a hablar.</p>
+          </div>
+
+          <!-- Real-time transcript boxes -->
+          <div class="w-full bg-slate-950/40 border border-slate-850 rounded-xl p-3 text-[11px] space-y-1.5 text-left h-24 overflow-y-auto">
+            <div><span class="text-amber-400 font-bold">Escuchado:</span> <span id="voice-tx-user" class="text-slate-300 italic">"..."</span></div>
+            <div><span class="text-sky-400 font-bold">Respuesta IA:</span> <span id="voice-tx-ai" class="text-slate-300">"..."</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 6: HISTORIAL TÉCNICO ================= -->
+      <div id="view-historial" class="view-panel space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="text-lg font-bold text-slate-100">Historial Técnico Agrícola</h3>
+              <p class="text-[11px] text-slate-400">Consulta los informes de riego previos y chats con el Asistente Técnico.</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="toggleHistoryTab('reports')" id="btn-hist-reports" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">Informes</button>
+              <button onclick="toggleHistoryTab('chats')" id="btn-hist-chats" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400">Conversaciones</button>
+            </div>
+          </div>
+
+          <!-- Reports History Table -->
+          <div id="hist-reports-container" class="space-y-4">
+            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400">
+                    <th class="py-2.5 px-3">Fecha</th>
+                    <th class="py-2.5 px-3">Municipio</th>
+                    <th class="py-2.5 px-3">Cultivo / Área</th>
+                    <th class="py-2.5 px-3">Índice GOTAIA</th>
+                    <th class="py-2.5 px-3">Prioridad</th>
+                    <th class="py-2.5 px-3 text-right">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="hist-reports-table" class="divide-y divide-slate-850 text-slate-300">
+                  <tr>
+                    <td colspan="6" class="py-4 text-center text-slate-500">Cargando historial de informes...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Chats History -->
+          <div id="hist-chats-container" class="space-y-4 hidden">
+            <div class="border border-slate-800 rounded-xl p-4 bg-slate-950/20 h-96 overflow-y-auto space-y-4" id="hist-chats-log">
+              <p class="text-slate-500 text-center py-10">Cargando bitácora de conversaciones con la IA...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 7: CULTIVOS CATALOG ================= -->
+      <div id="view-cultivos" class="view-panel space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-slate-100">Catálogo de Cultivos Agrícolas</h3>
+            <p class="text-[11px] text-slate-400">Consulta los coeficientes técnicos de riego y temperatura recomendada por cultivo.</p>
+          </div>
+
+          <!-- Search input -->
+          <input type="text" id="cultivos-search" oninput="filterCropsCatalog()" placeholder="Buscar cultivo (Ej. Soya, Maíz, Papa...)" class="w-full max-w-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cultivos-grid">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 8: MUNICIPIOS CATALOG ================= -->
+      <div id="view-municipios" class="view-panel space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-slate-100">Catálogo de Municipios Agrícolas</h3>
+            <p class="text-[11px] text-slate-400">Municipios de Bolivia con sus condiciones climáticas declaradas y geolocalización de referencia.</p>
+          </div>
+
+          <!-- Search & Department Filter -->
+          <div class="flex flex-wrap gap-3">
+            <input type="text" id="municipios-search" oninput="filterMunicipalitiesCatalog()" placeholder="Buscar municipio..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none w-full sm:w-64">
+            <select id="municipios-dept" onchange="filterMunicipalitiesCatalog()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none w-full sm:w-48">
+              <option value="all">Todos los Departamentos</option>
+              <option value="Santa Cruz">Santa Cruz</option>
+              <option value="Cochabamba">Cochabamba</option>
+              <option value="Tarija">Tarija</option>
+              <option value="La Paz">La Paz</option>
+              <option value="Oruro">Oruro</option>
+              <option value="Potosí">Potosí</option>
+              <option value="Chuquisaca">Chuquisaca</option>
+              <option value="Beni">Beni</option>
+            </select>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-800 rounded-xl">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-950/60 border-b border-slate-800 text-slate-400">
+                  <th class="py-2.5 px-3">Municipio</th>
+                  <th class="py-2.5 px-3">Departamento</th>
+                  <th class="py-2.5 px-3">Temp. Base</th>
+                  <th class="py-2.5 px-3">Humedad Base</th>
+                  <th class="py-2.5 px-3">Viento Promedio</th>
+                  <th class="py-2.5 px-3 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="municipios-table-body" class="divide-y divide-slate-850 text-slate-300">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 9: CONFIGURACIÓN ================= -->
+      <div id="view-config" class="view-panel space-y-6 hidden">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-6 max-w-2xl mx-auto">
+          <div>
+            <h3 class="text-lg font-bold text-slate-100">Configuración de Integración</h3>
+            <p class="text-[11px] text-slate-400">Ajusta los proveedores de clima y claves de la API de IA.</p>
+          </div>
+
+          <form id="config-form" onsubmit="event.preventDefault(); saveConfig();" class="space-y-4">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-800 pb-1.5">Proveedor de Climatología</h4>
+            
+            <div class="space-y-1">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Proveedor Activo</label>
+              <select id="cfg-weather-provider" onchange="toggleWeatherKeyInput()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                <!-- Dynamically loaded -->
+              </select>
+            </div>
+
+            <div class="space-y-1" id="weather-key-container">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clave API del Proveedor Clima</label>
+              <input type="password" id="cfg-weather-key" placeholder="Ingresa tu clave de API (Ej. WeatherAPI, OpenWeatherMap...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+              <span class="text-[10px] text-slate-500 block">Si la API falla o la clave está vacía, se usará el fallback climatológico local automáticamente.</span>
+            </div>
+
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 pt-4">Inteligencia Artificial (Gemini)</h4>
+
+            <div class="space-y-1">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Google Gemini API Key</label>
+              <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+              <span class="text-[10px] text-slate-500 block">Tu clave de API se guarda de forma segura en el backend y no se expone al cliente. Si no se introduce, la IA correrá en modo Simulado (Mock técnico).</span>
+            </div>
+
+            <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl hover:brightness-110 shadow-lg shadow-emerald-500/10 transition-all text-xs">
+              Guardar Configuración
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 10: PLANES Y SUSCRIPCIONES ================= -->
+      <div id="view-suscripciones" class="view-panel space-y-6 hidden">
+        <div class="space-y-2 text-center max-w-xl mx-auto">
+          <h3 class="text-2xl font-black text-white">Planes de Suscripción GOTAIA</h3>
+          <p class="text-xs text-slate-400">Escoge el plan técnico que mejor se adapte al tamaño de tu chaco y tus necesidades tecnológicas de campo.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch" id="plans-container">
+          <!-- Loaded dynamically -->
+        </div>
+
+        <!-- Billing Info note -->
+        <div class="glass-card rounded-2xl p-4 text-xs border border-slate-800 text-center max-w-lg mx-auto text-slate-400">
+          💡 **Cambio rápido de entorno:** Puedes cambiar de plan al instante en esta pantalla para probar las diferentes restricciones de acceso (`canAccess`) y el funcionamiento de cada informe.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- DETAIL REPORT MODAL -->
+  <div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 space-y-6 text-xs relative shadow-2xl">
+      <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+      
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest block">Consulta Histórica Detallada</span>
+        <h3 class="text-lg font-bold text-slate-100" id="modal-title">Informe Técnico de Riego</h3>
+      </div>
+
+      <div class="space-y-4" id="modal-content">
+        <!-- Dyn content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- LIMITATION ALERT MODAL (UPGRADE NOTIFICATION) -->
+  <div id="upgrade-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto text-3xl">
+        ⭐
+      </div>
+      <h3 class="text-xl font-bold text-white" id="upgrade-modal-title">Limitación de Plan</h3>
+      <p class="text-xs text-slate-400" id="upgrade-modal-desc">
+        Tu plan actual no te permite realizar consultas sobre este cultivo o municipio. Por favor, sube de nivel de suscripción para desbloquear el catálogo técnico completo.
+      </p>
+      <div class="flex gap-3 justify-center pt-2">
+        <button onclick="closeUpgradeModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs text-slate-300 font-bold hover:bg-slate-700">
+          Cancelar
+        </button>
+        <button onclick="closeUpgradeModal(); navigate('suscripciones');" class="px-4 py-2 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-slate-950 text-xs font-bold hover:brightness-110">
+          Ver Planes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS CONTROLLER -->
+  <script>
+    // Application state
+    let activeView = 'dashboard';
+    let userPlan = 'semillita';
+    let cropsCatalog = {};
+    let municipalitiesCatalog = {};
+    let currentWeather = {};
+    let activeReport = null;
+    let weatherProviders = [];
+    let activeHistoryTab = 'reports';
+
+    // Speech synthesis and recognition objects
+    let voiceRecognition = null;
+    let voiceSynthesis = window.speechSynthesis;
+    let isVoiceActive = false;
+
+    // Initialize SPA on load
+    window.onload = async () => {
+      await loadConfigAndCatalogs();
+      await fetchCurrentSubscription();
+      await fetchWeatherData();
+      setupSpeechRecognition();
+      navigate('dashboard');
+    };
+
+    // Toggle menu mobile
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    // Toggle active screens
+    function navigate(viewId) {
+      // Hide all screens
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
+      // Show targeted screen
+      const targetPanel = document.getElementById('view-' + viewId);
+      if (targetPanel) targetPanel.classList.remove('hidden');
+
+      // Update sidebar nav highlights
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('nav-active'));
+      const activeNav = document.getElementById('nav-' + viewId);
+      if (activeNav) activeNav.classList.add('nav-active');
+
+      // Update header title
+      const titles = {
+        dashboard: 'Panel de Control',
+        diagnostico: 'Diagnóstico de Riego',
+        agua: 'Control de Agua para Riego',
+        asistente: 'Asistente Técnico IA',
+        voz: 'Chat de Voz Agrónomo',
+        historial: 'Historial Técnico',
+        cultivos: 'Catálogo de Cultivos',
+        municipios: 'Municipios Agrícolas',
+        suscripciones: 'Planes y Suscripción',
+        config: 'Configuración de Integración'
+      };
+      document.getElementById('view-title').innerText = titles[viewId] || 'GOTAIA';
+      
+      // Close sidebar if on mobile
+      if (window.innerWidth < 768) {
+        document.getElementById('sidebar').classList.add('hidden');
+      }
+
+      activeView = viewId;
+
+      // Special triggers per view
+      if (viewId === 'historial') {
+        loadHistory();
+      } else if (viewId === 'agua') {
+        loadWaterModule();
+      }
+    }
+
+    // Load static catalogs and dynamic configs
+    async function loadConfigAndCatalogs() {
+      try {
+        // Crops
+        const cropRes = await fetch('/api/crops');
+        cropsCatalog = await cropRes.json();
+        populateCropsSelect();
+        renderCropsGrid();
+
+        // Municipalities
+        const muniRes = await fetch('/api/municipalities');
+        municipalitiesCatalog = await muniRes.json();
+        populateMunicipalitiesSelect();
+        renderMunicipalitiesTable();
+
+        // Weather providers
+        const provRes = await fetch('/api/weather/providers');
+        const data = await provRes.json();
+        weatherProviders = data.providers;
+        
+        // Populates config provider selector
+        const cfgProvSel = document.getElementById('cfg-weather-provider');
+        cfgProvSel.innerHTML = '';
+        weatherProviders.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.innerText = p.name + (p.id === 'mock' ? ' (Simulado)' : '');
+          cfgProvSel.appendChild(opt);
+        });
+
+        // Config setup
+        const activeProv = data.activeProvider;
+        cfgProvSel.value = activeProv;
+        toggleWeatherKeyInput();
+
+      } catch (e) {
+        console.error("Error loading catalogs", e);
+      }
+    }
+
+    // Populate Crops dropdowns
+    function populateCropsSelect() {
+      const select1 = document.getElementById('diag-crop');
+      const select2 = document.getElementById('water-crop');
+      select1.innerHTML = '';
+      select2.innerHTML = '';
+      
+      Object.keys(cropsCatalog).forEach(key => {
+        const crop = cropsCatalog[key];
+        const opt1 = document.createElement('option');
+        opt1.value = key;
+        opt1.innerText = crop.name;
+        select1.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = key;
+        opt2.innerText = crop.name;
+        select2.appendChild(opt2);
+      });
+    }
+
+    // Populate Municipalities dropdowns
+    function populateMunicipalitiesSelect() {
+      const select1 = document.getElementById('diag-muni');
+      const select2 = document.getElementById('water-muni');
+      select1.innerHTML = '';
+      select2.innerHTML = '';
+
+      Object.keys(municipalitiesCatalog).forEach(key => {
+        const muni = municipalitiesCatalog[key];
+        const opt1 = document.createElement('option');
+        opt1.value = key;
+        opt1.innerText = muni.name + " (" + muni.dept + ")";
+        select1.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = key;
+        opt2.innerText = muni.name + " (" + muni.dept + ")";
+        select2.appendChild(opt2);
+      });
+    }
+
+    // Subscription checker
+    async function fetchCurrentSubscription() {
+      try {
+        const res = await fetch('/api/subscription/current');
+        const data = await res.json();
+        userPlan = data.plan;
+        
+        // Update elements
+        updatePlanElements();
+      } catch (e) {
+        console.error("Error loading subscription", e);
+      }
+    }
+
+    // Update frontend indicators based on current plan permissions
+    function updatePlanElements() {
+      const badges = {
+        semillita: 'Semillita (Gratis)',
+        cebollita: 'Cebollita (Plus)',
+        maizingo: 'Maizingo (Anual)',
+        agropro: 'AgroPro (Enterprise)'
+      };
+
+      const badgeClass = {
+        semillita: 'text-slate-400 bg-slate-800/80 border border-slate-700',
+        cebollita: 'text-sky-400 bg-sky-500/10 border border-sky-500/20',
+        maizingo: 'text-amber-400 bg-amber-500/10 border border-amber-500/20',
+        agropro: 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+      };
+
+      const descs = {
+        semillita: 'Acceso básico y consultas limitadas.',
+        cebollita: 'Asistente IA habilitado e informe completo.',
+        maizingo: 'Chat de voz e IA avanzada con descuento del 20%.',
+        agropro: 'Control total de agua empresarial y descargas Office.'
+      };
+
+      // Sidebar & topbar plan badges
+      const name = badges[userPlan] || 'Semillita';
+      document.getElementById('sidebar-plan-badge').innerText = name.split(' ')[0];
+      document.getElementById('sidebar-plan-badge').className = "font-bold text-xs uppercase px-2 py-0.5 rounded-full " + badgeClass[userPlan];
+      document.getElementById('sidebar-plan-desc').innerText = descs[userPlan];
+      document.getElementById('dash-plan-name').innerText = name;
+
+      // Access checks for specific views
+      const hasAssistant = canAccess(userPlan, 'assistant_ai');
+      const hasVoice = canAccess(userPlan, 'voice_chat');
+      const hasWater = canAccess(userPlan, 'water_tracking');
+      const hasExport = canAccess(userPlan, 'word_export');
+
+      // Toggle display notices or contents
+      // Assistant AI
+      if (hasAssistant) {
+        document.getElementById('ai-text-blocked-notice').classList.add('hidden');
+        document.getElementById('ai-text-content').classList.remove('hidden');
+      } else {
+        document.getElementById('ai-text-blocked-notice').classList.remove('hidden');
+        document.getElementById('ai-text-content').classList.add('hidden');
+      }
+
+      // Voice chat
+      if (hasVoice) {
+        document.getElementById('ai-voice-blocked-notice').classList.add('hidden');
+        document.getElementById('ai-voice-content').classList.remove('hidden');
+      } else {
+        document.getElementById('ai-voice-blocked-notice').classList.remove('hidden');
+        document.getElementById('ai-voice-content').classList.add('hidden');
+      }
+
+      // Water monitoring
+      if (hasWater) {
+        document.getElementById('water-blocked-notice').classList.add('hidden');
+        document.getElementById('water-content').classList.remove('hidden');
+      } else {
+        document.getElementById('water-blocked-notice').classList.remove('hidden');
+        document.getElementById('water-content').classList.add('hidden');
+      }
+
+      // Checkbox visual indicators on dashboard
+      document.getElementById('chk-assistant').className = "w-1.5 h-1.5 rounded-full " + (hasAssistant ? 'bg-emerald-500 shadow shadow-emerald-500' : 'bg-slate-600');
+      document.getElementById('chk-voice').className = "w-1.5 h-1.5 rounded-full " + (hasVoice ? 'bg-emerald-500 shadow shadow-emerald-500' : 'bg-slate-600');
+      document.getElementById('chk-water').className = "w-1.5 h-1.5 rounded-full " + (hasWater ? 'bg-emerald-500 shadow shadow-emerald-500' : 'bg-slate-600');
+      document.getElementById('chk-export').className = "w-1.5 h-1.5 rounded-full " + (hasExport ? 'bg-emerald-500 shadow shadow-emerald-500' : 'bg-slate-600');
+
+      // Export section in diagnostic report
+      if (hasExport) {
+        document.getElementById('rep-export-bar').classList.remove('hidden');
+      } else {
+        document.getElementById('rep-export-bar').classList.add('hidden');
+      }
+
+      // Render plans screen
+      renderPlansScreen();
+    }
+
+    // Permission checker function
+    function canAccess(plan, feature) {
+      const p = plan.toLowerCase();
+      if (p === 'agropro') return true;
+      if (p === 'maizingo') {
+        return ['assistant_ai', 'voice_chat', 'advanced_report', 'full_history'].includes(feature);
+      }
+      if (p === 'cebollita') {
+        return ['assistant_ai', 'full_history'].includes(feature); // basic history check
+      }
+      return false; // semillita
+    }
+
+    // Enforce limits on crops and municipalities for Plan Semillita
+    function checkPlanLimitations() {
+      if (userPlan !== 'semillita') return;
+
+      const crop = document.getElementById('diag-crop').value;
+      const muni = document.getElementById('diag-muni').value;
+
+      // Allow only soya, maiz, lechuga
+      const allowedCrops = ['soya', 'maiz', 'lechuga'];
+      // Allow only montero, warnes, santa_cruz_de_la_sierra
+      const allowedMunis = ['montero', 'warnes', 'santa_cruz_de_la_sierra'];
+
+      if (!allowedCrops.includes(crop) || !allowedMunis.includes(muni)) {
+        // Reset selections to defaults
+        document.getElementById('diag-crop').value = 'maiz';
+        document.getElementById('diag-muni').value = 'santa_cruz_de_la_sierra';
+        
+        // Show modal upgrade notification
+        showUpgradeModal(
+          "Función Exclusiva del Catálogo", 
+          "El Plan Semillita (Gratis) limita tu diagnóstico a cultivos básicos (Maíz, Soya, Lechuga) y 3 municipios (Santa Cruz, Montero, Warnes). Sube a un plan Plus o Empresarial para habilitar los 20 cultivos y 39 municipios bolivianos."
+        );
+      }
+    }
+
+    // Show modal notification
+    function showUpgradeModal(title, desc) {
+      document.getElementById('upgrade-modal-title').innerText = title;
+      document.getElementById('upgrade-modal-desc').innerText = desc;
+      const modal = document.getElementById('upgrade-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeUpgradeModal() {
+      const modal = document.getElementById('upgrade-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Change plan in real time
+    async function selectPlan(planId) {
+      try {
+        const res = await fetch('/api/subscription/current', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: planId })
+        });
+        const data = await res.json();
+        userPlan = data.plan;
+        
+        updatePlanElements();
+        
+        // Return to dashboard
+        navigate('dashboard');
+      } catch (e) {
+        console.error("Error setting subscription", e);
+      }
+    }
+
+    // Fetch live weather data for the current active municipality
+    async function fetchWeatherData() {
+      const activeMuni = document.getElementById('diag-muni').value || 'santa_cruz_de_la_sierra';
+      try {
+        const res = await fetch(`/api/weather?municipio=${activeMuni}`);
+        currentWeather = await res.json();
+        
+        // Update header widget
+        document.getElementById('active-muni-header').innerText = municipalitiesCatalog[activeMuni]?.name || "Santa Cruz";
+        document.getElementById('header-weather-temp').innerText = currentWeather.temp + "°C";
+        document.getElementById('header-weather-humidity').innerText = "HR " + currentWeather.humidity + "%";
+        document.getElementById('header-weather-emoji').innerText = getWeatherEmoji(currentWeather.condition);
+        document.getElementById('header-weather-provider').innerText = currentWeather.provider === 'mock' ? 'API Local' : currentWeather.provider;
+
+        // Update dashboard widget
+        document.getElementById('dash-weather-condition').innerText = currentWeather.condition;
+        document.getElementById('dash-weather-city').innerText = municipalitiesCatalog[activeMuni]?.name || "Santa Cruz";
+        document.getElementById('dash-weather-emoji').innerText = getWeatherEmoji(currentWeather.condition);
+        document.getElementById('dash-w-feels').innerText = currentWeather.feels_like + "°C";
+        document.getElementById('dash-w-wind').innerText = currentWeather.wind + " km/h";
+        document.getElementById('dash-w-rain').innerText = currentWeather.rain + " mm";
+        document.getElementById('dash-w-chance').innerText = currentWeather.rain_chance + "%";
+        
+      } catch (e) {
+        console.error("Error fetching weather", e);
+      }
+    }
+
+    function getWeatherEmoji(condition) {
+      const cond = condition.toLowerCase();
+      if (cond.includes('calor') || cond.includes('despejado') || cond.includes('soleado')) return '☀️';
+      if (cond.includes('lluvia') || cond.includes('llovizna') || cond.includes('tormenta')) return '🌧️';
+      if (cond.includes('seco')) return '🌵';
+      return '⛅';
+    }
+
+    // Submit diagnostic form to get technical report
+    async function submitDiagnostic() {
+      const activeMuni = document.getElementById('diag-muni').value;
+      const crop = document.getElementById('diag-crop').value;
+      const hectares = parseFloat(document.getElementById('diag-hectares').value);
+      const soil = document.getElementById('diag-soil').value;
+      const stage = document.getElementById('diag-stage').value;
+      const soilHumidity = parseInt(document.getElementById('diag-soil-humidity').value);
+      const days = parseInt(document.getElementById('diag-days').value);
+      const waterAssigned = parseFloat(document.getElementById('diag-water-assigned').value);
+      const pumpingHours = parseFloat(document.getElementById('diag-pumping-hours').value);
+
+      const requestBody = {
+        municipio: activeMuni,
+        cropType: crop,
+        hectares,
+        soilType: soil,
+        cropStage: stage,
+        soilHumidity,
+        daysSinceLastIrrigation: days,
+        waterAssigned,
+        pumpingHours
+      };
+
+      try {
+        const response = await fetch('/api/irrigation/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        activeReport = await response.json();
+        displayReport(activeReport);
+        
+        // Refresh weather data
+        await fetchWeatherData();
+
+        // Update dashboard values
+        document.getElementById('dash-risk-val').innerText = activeReport.level;
+        document.getElementById('dash-risk-score').innerText = activeReport.finalIndex + " Puntos";
+        document.getElementById('dash-water-rec').innerText = activeReport.waterRecommended.toLocaleString() + " L";
+        document.getElementById('dash-last-crop').innerText = cropsCatalog[crop]?.name || crop;
+        document.getElementById('dash-last-date').innerText = new Date(activeReport.date).toLocaleDateString();
+
+        // Color average risk
+        const dashRisk = document.getElementById('dash-risk-val');
+        if (activeReport.level === 'Alto') dashRisk.className = "text-3xl font-extrabold text-red-500";
+        else if (activeReport.level === 'Medio') dashRisk.className = "text-3xl font-extrabold text-yellow-500";
+        else dashRisk.className = "text-3xl font-extrabold text-emerald-500";
+
+      } catch (e) {
+        console.error("Error generating report", e);
+      }
+    }
+
+    // Display generated technical report output based on plan limitations
+    function displayReport(report) {
+      document.getElementById('report-empty').classList.add('hidden');
+      const output = document.getElementById('report-output');
+      output.classList.remove('hidden');
+
+      // Update badge plan name
+      const badgePlan = document.getElementById('report-badge-plan');
+      const hasAdvReport = canAccess(userPlan, 'advanced_report');
+      const hasAIAdv = canAccess(userPlan, 'voice_chat'); // Maizingo or AgroPro
+
+      // Set plan name in label
+      if (userPlan === 'semillita') {
+        badgePlan.innerText = "Informe Técnico Básico";
+        badgePlan.className = "px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-400 uppercase tracking-widest font-bold";
+      } else if (userPlan === 'cebollita') {
+        badgePlan.innerText = "Informe Técnico Intermedio";
+        badgePlan.className = "px-2.5 py-1 rounded bg-sky-500/10 border border-sky-500/20 text-[10px] text-sky-400 uppercase tracking-widest font-bold";
+      } else if (userPlan === 'maizingo') {
+        badgePlan.innerText = "Informe Técnico Avanzado";
+        badgePlan.className = "px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-400 uppercase tracking-widest font-bold";
+      } else {
+        badgePlan.innerText = "Informe Profesional Corporativo";
+        badgePlan.className = "px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] text-emerald-400 uppercase tracking-widest font-bold";
+      }
+
+      // Base properties
+      document.getElementById('rep-score').innerText = report.finalIndex;
+      const offset = 289 - (289 * report.finalIndex) / 100;
+      document.getElementById('rep-circle').setAttribute('stroke-dashoffset', offset);
+      
+      // Semáforo colors
+      const circle = document.getElementById('rep-circle');
+      const priorityBadge = document.getElementById('rep-priority');
+      if (report.level === 'Alto') {
+        circle.setAttribute('class', 'stroke-red-500 fill-none gauge-circle-anim');
+        priorityBadge.innerText = "Prioridad: Alta";
+        priorityBadge.className = "mt-3 px-3 py-0.5 rounded-full font-bold text-[10px] uppercase text-red-400 bg-red-500/10 border border-red-500/20";
+      } else if (report.level === 'Medio') {
+        circle.setAttribute('class', 'stroke-yellow-500 fill-none gauge-circle-anim');
+        priorityBadge.innerText = "Prioridad: Media";
+        priorityBadge.className = "mt-3 px-3 py-0.5 rounded-full font-bold text-[10px] uppercase text-yellow-400 bg-yellow-500/10 border border-yellow-500/20";
+      } else {
+        circle.setAttribute('class', 'stroke-emerald-500 fill-none gauge-circle-anim');
+        priorityBadge.innerText = "Prioridad: Baja";
+        priorityBadge.className = "mt-3 px-3 py-0.5 rounded-full font-bold text-[10px] uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20";
+      }
+
+      document.getElementById('rep-action').innerText = '"' + report.actionText + '"';
+      
+      // General section
+      document.getElementById('rep-general-crop').innerText = cropsCatalog[report.cropType]?.name + " / " + (municipalitiesCatalog[report.municipio]?.name || report.municipio);
+      document.getElementById('rep-general-date').innerText = new Date(report.date).toLocaleDateString();
+      document.getElementById('rep-general-weather').innerText = report.weather.temp + "°C / " + report.weather.condition;
+      document.getElementById('rep-general-stage').innerText = document.getElementById('diag-stage').options[document.getElementById('diag-stage').selectedIndex].text + " / " + (report.soilType.charAt(0).toUpperCase() + report.soilType.slice(1));
+
+      // Climate & Soil
+      document.getElementById('rep-hum-amb').innerText = report.weather.humidity + "%";
+      document.getElementById('rep-wind').innerText = report.weather.wind + " km/h";
+      document.getElementById('rep-rain').innerText = report.weather.rain + " mm";
+      document.getElementById('rep-rain-chance').innerText = report.weather.rain_chance + "%";
+
+      document.getElementById('rep-hum-soil').innerText = report.soilHumidity + "%";
+      document.getElementById('rep-days').innerText = report.daysSinceLastIrrigation + " días";
+      document.getElementById('rep-soil').innerText = report.soilType.charAt(0).toUpperCase() + report.soilType.slice(1);
+      document.getElementById('rep-soil-ret').innerText = report.soilType === 'arenoso' ? 'Baja' : (report.soilType === 'franco' ? 'Óptima' : 'Alta');
+
+      // Hide or show Advanced Sections depending on permissions
+      const advSection = document.getElementById('rep-adv-section');
+      const aiSection = document.getElementById('rep-ai-section');
+
+      if (!hasAdvReport) {
+        // Semillita
+        advSection.classList.add('hidden');
+      } else {
+        // Cebollita, Maizingo, AgroPro
+        advSection.classList.remove('hidden');
+        
+        // Water balance calculation
+        document.getElementById('rep-w-assigned').innerText = report.waterAssigned.toLocaleString() + " L";
+        document.getElementById('rep-w-rec').innerText = report.waterRecommended.toLocaleString() + " L";
+        
+        const diff = report.waterAssigned - report.waterRecommended;
+        const diffElement = document.getElementById('rep-w-diff');
+        const alertElement = document.getElementById('rep-w-alert');
+
+        if (diff >= 0) {
+          diffElement.innerText = "+" + diff.toLocaleString() + " L";
+          diffElement.className = "text-base font-extrabold text-emerald-400";
+          alertElement.innerText = "El volumen de agua asignado cubre la demanda recomendada para este ciclo de riego.";
+          alertElement.className = "p-2.5 rounded-lg text-center font-bold text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        } else {
+          diffElement.innerText = diff.toLocaleString() + " L";
+          diffElement.className = "text-base font-extrabold text-red-500";
+          alertElement.innerText = "⚠️ ALERTA: El agua asignada es insuficiente. Déficit proyectado del " + Math.round((Math.abs(diff) / report.waterRecommended) * 100) + "%. Aumenta la irrigación.";
+          alertElement.className = "p-2.5 rounded-lg text-center font-bold text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse";
+        }
+
+        // AI specific recommendations (Blocked for Cebollita, available for Maizingo/AgroPro)
+        if (!hasAIAdv) {
+          aiSection.classList.add('hidden');
+        } else {
+          aiSection.classList.remove('hidden');
+          document.getElementById('rep-ai-content').innerText = '"' + report.aiObservation + '"';
+        }
+      }
+    }
+
+    // Export report endpoints
+    async function exportReport(format) {
+      if (!activeReport) return;
+      
+      try {
+        const response = await fetch(`/api/reports/export/${format}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(activeReport)
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `reporte_riego_${activeReport.cropType}_${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'csv' : 'doc'}`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } else {
+          alert("Error al exportar el archivo.");
+        }
+      } catch (e) {
+        console.error("Error exporting", e);
+      }
+    }
+
+    // Water tracker module (AgroPro)
+    async function loadWaterModule() {
+      if (userPlan !== 'agropro') return;
+
+      try {
+        const res = await fetch('/api/irrigation/water-tracking');
+        const logs = await res.json();
+        
+        renderWaterLogsTable(logs);
+        calculateWaterSummary(logs);
+      } catch (e) {
+        console.error("Error loading water module", e);
+      }
+    }
+
+    async function registerWaterLog() {
+      const muni = document.getElementById('water-muni').value;
+      const crop = document.getElementById('water-crop').value;
+      const surface = parseFloat(document.getElementById('water-surface').value);
+      const stage = document.getElementById('water-stage').value;
+      const avail = parseFloat(document.getElementById('water-avail').value);
+      const used = parseFloat(document.getElementById('water-used').value);
+
+      const requestBody = {
+        municipio: muni,
+        cropType: crop,
+        surfaceArea: surface,
+        cropStage: stage,
+        waterAvailable: avail,
+        waterUsed: used
+      };
+
+      try {
+        await fetch('/api/irrigation/water-tracking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        // Reset form slightly
+        document.getElementById('water-used').value = 0;
+        
+        // Reload water module
+        await loadWaterModule();
+      } catch (e) {
+        console.error("Error logging water", e);
+      }
+    }
+
+    function renderWaterLogsTable(logs) {
+      const tbody = document.getElementById('water-logs-table');
+      tbody.innerHTML = '';
+
+      if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">Ningún registro de riego guardado en esta campaña.</td></tr>`;
+        return;
+      }
+
+      logs.forEach(log => {
+        const cropName = cropsCatalog[log.cropType]?.name || log.cropType;
+        const muniName = municipalitiesCatalog[log.municipio]?.name || log.municipio;
+        const dateStr = new Date(log.date).toLocaleDateString() + " " + new Date(log.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const diff = log.waterAvailable - log.waterUsed;
+        const diffClass = diff >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold';
+        const diffText = diff >= 0 ? "Suficiente" : "Déficit (" + Math.abs(diff).toLocaleString() + " L)";
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/40";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-medium text-slate-400">${dateStr}</td>
+          <td class="py-2.5 px-3 font-semibold text-slate-200">${muniName} / ${cropName}</td>
+          <td class="py-2.5 px-3 text-slate-300">${log.surfaceArea} Has</td>
+          <td class="py-2.5 px-3 text-slate-300">${log.waterAvailable.toLocaleString()} / ${log.waterUsed.toLocaleString()} L</td>
+          <td class="py-2.5 px-3 text-right ${diffClass}">${diffText}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function calculateWaterSummary(logs) {
+      if (logs.length === 0) {
+        document.getElementById('w-stats-rec').innerText = "0 L";
+        document.getElementById('w-stats-used').innerText = "0 L";
+        document.getElementById('w-stats-pct').innerText = "0%";
+        document.getElementById('w-stats-bar').style.width = "0%";
+        document.getElementById('w-avail-pct').innerText = "100%";
+        document.getElementById('w-avail-bar').style.width = "100%";
+        document.getElementById('dash-water-used').innerText = "0 L";
+        return;
+      }
+
+      // Sum all logs
+      let totalUsed = 0;
+      let totalAvail = 0;
+      let totalRecommended = 0;
+
+      logs.forEach(log => {
+        totalUsed += log.waterUsed;
+        totalAvail += log.waterAvailable;
+        
+        // Estimate recommendation based on crop and area
+        const cropData = cropsCatalog[log.cropType];
+        const base = cropData ? cropData.baseConsumption : 5000;
+        totalRecommended += (base * log.surfaceArea);
+      });
+
+      document.getElementById('w-stats-rec').innerText = totalRecommended.toLocaleString() + " L";
+      document.getElementById('w-stats-used').innerText = totalUsed.toLocaleString() + " L";
+      document.getElementById('dash-water-used').innerText = totalUsed.toLocaleString() + " L";
+
+      // Recommendation percent
+      const pct = Math.round((totalUsed / totalRecommended) * 100) || 0;
+      document.getElementById('w-stats-pct').innerText = pct + "%";
+      document.getElementById('w-stats-bar').style.width = Math.min(pct, 100) + "%";
+
+      // Available supply percent
+      const availPct = Math.round(((totalAvail - totalUsed) / totalAvail) * 100) || 0;
+      const safePct = Math.max(availPct, 0);
+      document.getElementById('w-avail-pct').innerText = safePct + "%";
+      document.getElementById('w-avail-bar').style.width = safePct + "%";
+
+      const alertBox = document.getElementById('w-supply-alert');
+      if (safePct < 20) {
+        alertBox.innerText = "⚠️ URGENTE: Nivel crítico de suministro. El agua consumida se acerca a tu capacidad disponible.";
+        alertBox.className = "p-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded text-[9px] font-bold text-center animate-pulse";
+      } else if (safePct < 50) {
+        alertBox.innerText = "Preferencia: Alerta preventiva. Se ha consumido más del 50% del agua asignada.";
+        alertBox.className = "p-2 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 rounded text-[9px] font-bold text-center";
+      } else {
+        alertBox.innerText = "Suministro de agua suficiente en base a la asignación y consumo declarados.";
+        alertBox.className = "p-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-[9px] font-bold text-center";
+      }
+    }
+
+    // AI Chat implementation
+    async function sendTextChatMessage() {
+      const input = document.getElementById('ai-chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      appendChatMessage('user', text);
+
+      try {
+        const response = await fetch('/api/assistant/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        
+        appendChatMessage('assistant', data.reply);
+      } catch (e) {
+        console.error("Error in AI chat", e);
+        appendChatMessage('assistant', "Hubo un error al conectar con el servidor de inteligencia artificial.");
+      }
+    }
+
+    function appendChatMessage(role, text) {
+      const box = document.getElementById('ai-chat-messages');
+      const div = document.createElement('div');
+      
+      if (role === 'user') {
+        div.className = "bg-emerald-500/10 text-emerald-300 p-3 rounded-2xl border border-emerald-500/20 max-w-[80%] self-end ml-auto leading-relaxed";
+      } else {
+        div.className = "bg-slate-900 text-slate-300 p-3 rounded-2xl border border-slate-850 max-w-[80%] leading-relaxed";
+      }
+      div.innerText = text;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function clearChatMemory() {
+      try {
+        await fetch('/api/assistant/memory', { method: 'POST' });
+        const box = document.getElementById('ai-chat-messages');
+        box.innerHTML = `<div class="bg-slate-900 text-slate-300 p-3 rounded-2xl border border-slate-850 max-w-[80%]">Memoria conversacional reiniciada. ¿En qué más puedo ayudarte?</div>`;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Speech recognition setup (voice chat)
+    function setupSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        voiceRecognition = new SpeechRecognition();
+        voiceRecognition.lang = 'es-BO';
+        voiceRecognition.continuous = false;
+        voiceRecognition.interimResults = false;
+
+        voiceRecognition.onstart = () => {
+          document.getElementById('voice-status').innerText = "Escuchando...";
+          document.getElementById('voice-subtext').innerText = "Habla ahora sobre tu predio agrícola.";
+          document.getElementById('voice-pulse-ring').classList.remove('hidden');
+        };
+
+        voiceRecognition.onerror = (e) => {
+          console.error("Speech recognition error", e);
+          stopVoiceSession();
+        };
+
+        voiceRecognition.onend = () => {
+          document.getElementById('voice-pulse-ring').classList.add('hidden');
+          if (isVoiceActive) {
+            document.getElementById('voice-status').innerText = "Procesando...";
+          }
+        };
+
+        voiceRecognition.onresult = async (event) => {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById('voice-tx-user').innerText = `"${transcript}"`;
+          
+          try {
+            // Send to voice API
+            const response = await fetch('/api/assistant/voice', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: transcript })
+            });
+            const data = await response.json();
+            
+            document.getElementById('voice-tx-ai').innerText = `"${data.reply}"`;
+            
+            // Speak back
+            speakText(data.reply);
+          } catch (e) {
+            console.error("Voice handler error", e);
+            document.getElementById('voice-tx-ai').innerText = `"Error al procesar la respuesta."`;
+            stopVoiceSession();
+          }
+        };
+      }
+    }
+
+    function toggleVoiceSession() {
+      if (isVoiceActive) {
+        stopVoiceSession();
+      } else {
+        startVoiceSession();
+      }
+    }
+
+    function startVoiceSession() {
+      if (!voiceRecognition) {
+        alert("El reconocimiento de voz no es compatible con este navegador. Por favor, usa Google Chrome.");
+        return;
+      }
+      isVoiceActive = true;
+      voiceSynthesis.cancel(); // stop any current speaking
+      document.getElementById('btn-voice-mic').className = "relative w-24 h-24 rounded-full bg-gradient-to-tr from-red-500 to-red-400 text-white flex items-center justify-center shadow-xl shadow-red-500/20 hover:brightness-110 transition-all z-10 animate-pulse";
+      voiceRecognition.start();
+    }
+
+    function stopVoiceSession() {
+      isVoiceActive = false;
+      if (voiceRecognition) {
+        voiceRecognition.stop();
+      }
+      voiceSynthesis.cancel();
+      document.getElementById('btn-voice-mic').className = "relative w-24 h-24 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 flex items-center justify-center shadow-xl shadow-amber-500/20 hover:brightness-110 transition-all z-10";
+      document.getElementById('voice-status').innerText = "Sesión inactiva";
+      document.getElementById('voice-subtext').innerText = "Haz clic en el micrófono para empezar a hablar.";
+      document.getElementById('voice-pulse-ring').classList.add('hidden');
+    }
+
+    function speakText(text) {
+      if (!voiceSynthesis) return;
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-ES';
+      
+      utterance.onstart = () => {
+        document.getElementById('voice-status').innerText = "IA Hablando...";
+        document.getElementById('voice-subtext').innerText = "Escucha la recomendación agronómica.";
+      };
+      
+      utterance.onend = () => {
+        document.getElementById('voice-status').innerText = "Sesión inactiva";
+        document.getElementById('voice-subtext').innerText = "Vuelve a presionar para responder.";
+        isVoiceActive = false;
+        document.getElementById('btn-voice-mic').className = "relative w-24 h-24 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 flex items-center justify-center shadow-xl shadow-amber-500/20 hover:brightness-110 transition-all z-10";
+      };
+
+      voiceSynthesis.speak(utterance);
+    }
+
+    // Load reports and chats logs in history
+    async function loadHistory() {
+      const hasHistoryAccess = canAccess(userPlan, 'full_history');
+      
+      const tbody = document.getElementById('hist-reports-table');
+      tbody.innerHTML = '';
+
+      if (!hasHistoryAccess) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 font-medium">El Plan Semillita (Gratis) no incluye historial de consultas. Sube de plan para habilitar la bitácora técnica de campo.</td></tr>`;
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/reports/history');
+        const list = await res.json();
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Ningún informe registrado en esta campaña.</td></tr>`;
+        } else {
+          list.forEach(rep => {
+            const cropName = cropsCatalog[rep.cropType]?.name || rep.cropType;
+            const muniName = municipalitiesCatalog[rep.municipio]?.name || rep.municipio;
+            const dateStr = new Date(rep.date).toLocaleDateString() + " " + new Date(rep.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-900/40";
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 font-medium text-slate-400">${dateStr}</td>
+              <td class="py-2.5 px-3 font-semibold text-slate-200">${muniName}</td>
+              <td class="py-2.5 px-3 text-slate-300">${cropName} (${rep.hectares} Has)</td>
+              <td class="py-2.5 px-3 text-slate-200 font-bold">${rep.finalIndex} / 100</td>
+              <td class="py-2.5 px-3">
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold ${rep.level === 'Alto' ? 'text-red-400 bg-red-500/10 border border-red-500/20' : (rep.level === 'Medio' ? 'text-yellow-400 bg-yellow-500/10 border border-yellow-500/20' : 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20')}">${rep.level.toUpperCase()}</span>
+              </td>
+              <td class="py-2.5 px-3 text-right">
+                <button onclick="viewReportDetail('${rep.id}')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">Ver Detalle</button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        // Chat logs loading
+        const chatLogsRes = await fetch('/api/assistant/history');
+        const chats = await chatLogsRes.json();
+        const chatContainer = document.getElementById('hist-chats-log');
+        chatContainer.innerHTML = '';
+
+        if (userPlan === 'cebollita') {
+          chatContainer.innerHTML = `<p class="text-slate-500 text-center py-10">El plan Cebollita solo permite acceso al chat básico, el historial completo de conversaciones de IA es exclusivo de Maizingo y AgroPro.</p>`;
+          return;
+        }
+
+        if (chats.length === 0) {
+          chatContainer.innerHTML = `<p class="text-slate-500 text-center py-10">Ninguna conversación en la memoria local aún.</p>`;
+        } else {
+          chats.forEach(msg => {
+            const div = document.createElement('div');
+            const date = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            if (msg.role === 'user') {
+              div.className = "bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 max-w-[85%] ml-auto text-right text-slate-200";
+              div.innerHTML = `<div class="text-[9px] text-emerald-400 font-bold mb-0.5">Usuario &bull; ${date}</div><div>${msg.text}</div>`;
+            } else {
+              div.className = "bg-slate-900 border border-slate-850 rounded-xl p-3 max-w-[85%] text-slate-300";
+              div.innerHTML = `<div class="text-[9px] text-sky-400 font-bold mb-0.5">${msg.type === 'voice' ? 'IA (Voz)' : 'IA'} &bull; ${date}</div><div>${msg.text}</div>`;
+            }
+            chatContainer.appendChild(div);
+          });
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      } catch (e) {
+        console.error("Error loading history", e);
+      }
+    }
+
+    function toggleHistoryTab(tab) {
+      activeHistoryTab = tab;
+      const btnReports = document.getElementById('btn-hist-reports');
+      const btnChats = document.getElementById('btn-hist-chats');
+      const reportsCont = document.getElementById('hist-reports-container');
+      const chatsCont = document.getElementById('hist-chats-container');
+
+      if (tab === 'reports') {
+        btnReports.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20";
+        btnChats.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400";
+        reportsCont.classList.remove('hidden');
+        chatsCont.classList.add('hidden');
+      } else {
+        btnChats.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20";
+        btnReports.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400";
+        chatsCont.classList.remove('hidden');
+        reportsCont.classList.add('hidden');
+      }
+    }
+
+    // Modal details for report history
+    async function viewReportDetail(reportId) {
+      try {
+        const res = await fetch('/api/reports/history');
+        const list = await res.json();
+        const report = list.find(r => r.id === reportId);
+        if (!report) return;
+
+        const modal = document.getElementById('detail-modal');
+        const mTitle = document.getElementById('modal-title');
+        const mContent = document.getElementById('modal-content');
+
+        mTitle.innerText = "Diagnóstico Técnico de Riego - ID " + report.id.substring(0, 8);
+        
+        // Format HTML
+        const hasAdv = canAccess(userPlan, 'advanced_report');
+        const hasAI = canAccess(userPlan, 'voice_chat');
+
+        let innerHTML = `
+          <div class="grid grid-cols-2 gap-4 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+            <div>
+              <span class="text-slate-500 text-[10px] block">Municipio / Cultivo</span>
+              <span class="text-sm font-bold text-slate-200">${municipalitiesCatalog[report.municipio]?.name} / ${cropsCatalog[report.cropType]?.name}</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-[10px] block">Índice GOTAIA</span>
+              <span class="text-sm font-bold text-emerald-400">${report.finalIndex} / 100 (${report.level})</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-[10px] block">Condición Clima</span>
+              <span class="text-sm font-bold text-slate-200">${report.weather.temp}°C, Hum. ${report.weather.humidity}%, ${report.weather.condition}</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-[10px] block">Suelo / Humedad Suelo</span>
+              <span class="text-sm font-bold text-slate-200">${report.soilType.toUpperCase()} - Hum. ${report.soilHumidity}%</span>
+            </div>
+          </div>
+          
+          <div class="space-y-1">
+            <span class="text-slate-500 text-[10px] uppercase font-bold block">Recomendación Operativa</span>
+            <p class="text-slate-300 font-medium bg-slate-950/20 p-3 rounded-lg border border-slate-850">"${report.actionText}"</p>
+          </div>
+        `;
+
+        if (hasAdv) {
+          const diff = report.waterAssigned - report.waterRecommended;
+          innerHTML += `
+            <div class="space-y-2 bg-slate-950/40 p-4 rounded-xl border border-slate-850">
+              <span class="text-slate-400 text-[10px] uppercase font-bold block">Análisis de Balance Hídrico</span>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <span class="text-[9px] text-slate-500 block">Asignado</span>
+                  <span class="text-xs font-bold text-slate-300">${report.waterAssigned.toLocaleString()} L</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-slate-500 block">Recomendado</span>
+                  <span class="text-xs font-bold text-sky-400">${report.waterRecommended.toLocaleString()} L</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-slate-500 block">Balance</span>
+                  <span class="text-xs font-bold ${diff >= 0 ? 'text-emerald-400' : 'text-red-400'}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()} L</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        if (hasAI) {
+          innerHTML += `
+            <div class="space-y-1">
+              <span class="text-slate-400 text-[10px] uppercase font-bold block">Observaciones del Asistente Técnico IA</span>
+              <p class="text-slate-300 leading-relaxed italic bg-slate-950/40 p-3 rounded-lg border border-slate-850">"${report.aiObservation}"</p>
+            </div>
+          `;
+        }
+
+        // Add export buttons inside modal for AgroPro
+        if (canAccess(userPlan, 'word_export')) {
+          innerHTML += `
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <button onclick="closeDetailModal(); exportReport('word')" class="px-3 py-1.5 bg-blue-600 rounded-lg text-[10px] font-bold">Word</button>
+              <button onclick="closeDetailModal(); exportReport('excel')" class="px-3 py-1.5 bg-emerald-600 rounded-lg text-[10px] font-bold">Excel</button>
+            </div>
+          `;
+        }
+
+        mContent.innerHTML = innerHTML;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } catch (e) {
+        console.error("Error displaying detail modal", e);
+      }
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Render Crops Catalog
+    function renderCropsGrid() {
+      const grid = document.getElementById('cultivos-grid');
+      grid.innerHTML = '';
+      
+      Object.keys(cropsCatalog).forEach(key => {
+        const crop = cropsCatalog[key];
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-4 border border-slate-800 flex flex-col justify-between space-y-3 crop-card";
+        card.dataset.name = crop.name.toLowerCase();
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="text-sm font-bold text-white">${crop.name}</h4>
+              <span class="text-[9px] px-2 py-0.5 rounded font-bold ${crop.sensitivity === 'Muy Alta' || crop.sensitivity === 'Alta' ? 'text-red-400 bg-red-500/10' : (crop.sensitivity === 'Media' ? 'text-yellow-400 bg-yellow-500/10' : 'text-emerald-400 bg-emerald-500/10')}">${crop.sensitivity} Sensibilidad</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-2">${crop.obs}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-950/40 p-2.5 rounded-lg border border-slate-850">
+            <div>
+              <span class="text-slate-500 block">Consumo Base</span>
+              <span class="font-bold text-slate-300">${crop.baseConsumption.toLocaleString()} L/Ha</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Rango Temp.</span>
+              <span class="font-bold text-slate-300">${crop.tempRange}</span>
+            </div>
+            <div class="col-span-2">
+              <span class="text-slate-500 block">Etapa Crítica</span>
+              <span class="font-bold text-amber-400">${crop.criticalStage}</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterCropsCatalog() {
+      const q = document.getElementById('cultivos-search').value.toLowerCase();
+      document.querySelectorAll('.crop-card').forEach(card => {
+        if (card.dataset.name.includes(q)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Render Municipalities Catalog
+    function renderMunicipalitiesTable() {
+      const tbody = document.getElementById('municipios-table-body');
+      tbody.innerHTML = '';
+
+      Object.keys(municipalitiesCatalog).forEach(key => {
+        const muni = municipalitiesCatalog[key];
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/40 muni-row";
+        tr.dataset.name = muni.name.toLowerCase();
+        tr.dataset.dept = muni.dept;
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-semibold text-slate-200">${muni.name}</td>
+          <td class="py-2.5 px-3 text-slate-400">${muni.dept}</td>
+          <td class="py-2.5 px-3 text-slate-300">${muni.baseTemp}°C</td>
+          <td class="py-2.5 px-3 text-slate-300">${muni.baseHumidity}% HR</td>
+          <td class="py-2.5 px-3 text-slate-300">${muni.baseWind} km/h</td>
+          <td class="py-2.5 px-3 text-right">
+            <button onclick="selectMuniForDiag('${key}')" class="px-2 py-0.8 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-[10px] rounded border border-emerald-500/20 font-bold">Consultar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterMunicipalitiesCatalog() {
+      const q = document.getElementById('municipios-search').value.toLowerCase();
+      const dept = document.getElementById('municipios-dept').value;
+
+      document.querySelectorAll('.muni-row').forEach(row => {
+        const matchesSearch = row.dataset.name.includes(q);
+        const matchesDept = (dept === 'all' || row.dataset.dept === dept);
+
+        if (matchesSearch && matchesDept) {
+          row.classList.remove('hidden');
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+    }
+
+    function selectMuniForDiag(muniId) {
+      // Set selects
+      document.getElementById('diag-muni').value = muniId;
+      // Triggers limitation check
+      checkPlanLimitations();
+      // Fetch weather and go to form
+      fetchWeatherData();
+      navigate('diagnostico');
+    }
+
+    // Plans page rendering
+    async function renderPlansScreen() {
+      try {
+        const res = await fetch('/api/plans');
+        const plans = await res.json();
+        const container = document.getElementById('plans-container');
+        container.innerHTML = '';
+
+        plans.forEach(plan => {
+          const isCurrent = plan.id === userPlan;
+          
+          let cardBorder = 'border-slate-800 bg-slate-900/40';
+          let buttonClass = 'bg-slate-800 text-slate-200 hover:bg-slate-700';
+          let btnText = 'Seleccionar Plan';
+
+          if (isCurrent) {
+            cardBorder = 'border-emerald-500 bg-emerald-950/10 shadow-lg shadow-emerald-500/5';
+            buttonClass = 'bg-emerald-500 text-slate-950 font-bold cursor-default brightness-110';
+            btnText = 'Plan Activo';
+          } else if (plan.id === 'agropro') {
+            buttonClass = 'bg-gradient-to-r from-emerald-500 to-sky-500 text-slate-950 font-bold hover:brightness-110';
+          } else if (plan.id === 'maizingo') {
+            buttonClass = 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold';
+          } else if (plan.id === 'cebollita') {
+            buttonClass = 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold';
+          }
+
+          // Build feature lists
+          let featuresHTML = '';
+          const featsList = [
+            { key: 'assistant_ai', label: 'Asistente Técnico IA' },
+            { key: 'voice_chat', label: 'Chat de Voz a Voz' },
+            { key: 'advanced_report', label: 'Informe Riego Avanzado' },
+            { key: 'word_export', label: 'Exportar a Word' },
+            { key: 'excel_export', label: 'Exportar a Excel' },
+            { key: 'water_tracking', label: 'Módulo de Agua Riego' },
+            { key: 'full_history', label: 'Historial Técnico' }
+          ];
+
+          featsList.forEach(item => {
+            const hasFeat = plan.features[item.key];
+            const color = hasFeat ? 'text-emerald-400' : 'text-slate-600 line-through';
+            const icon = hasFeat ? '✓' : '✗';
+            featuresHTML += `<li class="${color} flex items-center gap-1.5"><span>${icon}</span> ${item.label}</li>`;
+          });
+
+          const discountBadge = plan.discount ? `<span class="absolute top-3 right-3 px-2 py-0.5 rounded text-[8px] bg-red-500/20 text-red-400 border border-red-500/30 font-bold uppercase">${plan.discount}</span>` : '';
+
+          const card = document.createElement('div');
+          card.className = `glass-card rounded-3xl p-5 flex flex-col justify-between space-y-5 border relative ${cardBorder}`;
+          card.innerHTML = `
+            ${discountBadge}
+            <div class="space-y-3">
+              <div>
+                <h4 class="text-base font-bold text-white uppercase tracking-wider">${plan.name}</h4>
+                <p class="text-[10px] text-slate-400 mt-1 h-8">${plan.description}</p>
+              </div>
+              <div class="flex items-baseline gap-1 pt-1 border-t border-slate-800">
+                <span class="text-2xl font-extrabold text-white">${plan.price}</span>
+                <span class="text-[10px] text-slate-500">/ ${plan.period}</span>
+              </div>
+              <ul class="text-[10px] space-y-1.5 pt-2">
+                ${featuresHTML}
+              </ul>
+            </div>
+            
+            <button onclick="${isCurrent ? '' : `selectPlan('${plan.id}')`}" class="w-full py-2 rounded-xl text-xs font-bold transition-all ${buttonClass}">
+              ${btnText}
+            </button>
+          `;
+          container.appendChild(card);
+        });
+
+      } catch (e) {
+        console.error("Error rendering plans", e);
+      }
+    }
+
+    // Config form settings
+    function toggleWeatherKeyInput() {
+      const prov = document.getElementById('cfg-weather-provider').value;
+      const keyContainer = document.getElementById('weather-key-container');
+      if (prov === 'mock') {
+        keyContainer.classList.add('hidden');
+      } else {
+        keyContainer.classList.remove('hidden');
+      }
+    }
+
+    async function saveConfig() {
+      const prov = document.getElementById('cfg-weather-provider').value;
+      const wKey = document.getElementById('cfg-weather-key').value;
+      const gemKey = document.getElementById('cfg-gemini-key').value;
+
+      try {
+        const response = await fetch('/api/weather/providers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            activeProvider: prov,
+            weatherApiKey: wKey,
+            geminiApiKey: gemKey
+          })
+        });
+
+        if (response.ok) {
+          alert("Configuración guardada correctamente.");
+          await fetchWeatherData();
+        } else {
+          alert("Error al guardar la configuración.");
+        }
+      } catch (e) {
+        console.error("Error saving config", e);
+      }
+    }
+  </script>
+</body>
+</html>

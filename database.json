@@ -1,0 +1,25 @@
+{
+  "reports": [],
+  "chats": [
+    {
+      "role": "user",
+      "text": "que dia wes hoy\\",
+      "timestamp": "2026-05-31T13:24:51.552Z"
+    },
+    {
+      "role": "assistant",
+      "text": "Como recomendador agrícola de GOTAIA, te aconsejo monitorear el balance de agua de tus predios. Recuerda programar tus turnos de riego en base al índice de estrés hídrico de GOTAIA, combinando la fenología del cultivo, tipo de suelo y lluvias registradas por la estación climática de tu municipio.",
+      "timestamp": "2026-05-31T13:24:51.559Z",
+      "type": "text"
+    }
+  ],
+  "waterLogs": [],
+  "subscription": {
+    "plan": "cebollita"
+  },
+  "config": {
+    "geminiApiKey": "",
+    "weatherProvider": "mock",
+    "weatherApiKey": ""
+  }
+}

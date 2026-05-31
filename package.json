@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "firebase": "^12.14.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0"
+  }
+}
