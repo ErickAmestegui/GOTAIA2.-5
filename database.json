@@ -1,5 +1,35 @@
 {
-  "reports": [],
+  "reports": [
+    {
+      "id": "rep_mspwjj99z",
+      "date": "2026-05-31T13:41:49.801Z",
+      "municipio": "charagua",
+      "cropType": "platano",
+      "hectares": 5,
+      "soilType": "arenoso",
+      "cropStage": "desarrollo_vegetativo",
+      "soilHumidity": 66,
+      "daysSinceLastIrrigation": 28,
+      "waterAssigned": 50000,
+      "pumpingHours": 10,
+      "weather": {
+        "temp": 35,
+        "humidity": 44,
+        "rain": 1,
+        "wind": 18,
+        "feels_like": 33,
+        "rain_chance": 17,
+        "condition": "Soleado",
+        "timestamp": "2026-05-31T13:41:49.786Z",
+        "provider": "mock"
+      },
+      "finalIndex": 81,
+      "level": "Alto",
+      "actionText": "Riesgo crítico de déficit hídrico. Programar riego urgente e inmediato para mitigar daños permanentes.",
+      "waterRecommended": 32257,
+      "aiObservation": "Como recomendador agrícola de GOTAIA, te aconsejo que evalúes la textura del suelo. Suelos arenosos tienen baja retención y requieren riegos cortos pero continuos, mientras que los arcillosos retienen más humedad y son propensos al encharcamiento si se riega en exceso."
+    }
+  ],
   "chats": [
     {
       "role": "user",
@@ -15,7 +45,7 @@
   ],
   "waterLogs": [],
   "subscription": {
-    "plan": "cebollita"
+    "plan": "agropro"
   },
   "config": {
     "geminiApiKey": "",
